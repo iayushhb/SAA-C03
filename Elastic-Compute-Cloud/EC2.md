@@ -65,3 +65,5 @@ The Spot Instances are distributed across the number of Spot Instance pools you 
 2. **Licensing** : Great for licensing that does not support multi-tenancy or cloud deployments.
 3. **On-Demand** : Can be purchased on-demand (hourly).
 4. **Reserved** : Can be purchased as a reservation for up to 70% off the on-demand price.
+
+**Dedicated Hosts allow you to use your existing per-socket, per-core, or per-VM software licenses. When you bring your own license, you are responsible for managing your own licenses. However, Amazon EC2 has features that help you maintain license compliance, such as instance affinity and targeted placement.**
