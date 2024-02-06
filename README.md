@@ -1,4 +1,4 @@
-### Theory for _AWS Certified Solutions Architect Associate_
+# Theory for _AWS Certified Solutions Architect Associate_
 
 -   [`AWS Well-Architected Framework`](#aws-well-architected-framework)
 -   [`IAM`](#identity-access-management)
@@ -510,37 +510,13 @@ A Spot Fleet is a set of Spot Instances and optionally On-Demand Instances that 
 
 An IAM role is an IAM identity that you can create in your account that has specific permissions. An IAM role is similar to an IAM user, in that it is an AWS identity with permission policies that determine what the identity can and cannot do in AWS. However, instead of being uniquely associated with one person, a role is intended to be assumable by anyone who needs it. Also, a role does not have standard long-term credentials such as a password or access keys associated with it. Instead, when you assume a role, it provides you with temporary security credentials for your role session.
 
-## Creating an IAM role
-
-To create an IAM role head over to IAM > Role and hit create role
-![Alt text](/Photos/roles-iam.png)
-and now select aws service and for usecase let's just go with ec2
-
-Now select permissions you want to give : here I am giving S3 full access.
-![Alt text](/Photos/roles-permissions.png)
-
-Now name review and create -
-![Alt text](/Photos/role-final.png)
-
-### Using the created role
-
-To use your role that your created head over to ec2 and create an instance then select your created ec2 instance and hit actions > security > Modify IAM role and select the role that  
-![Alt text](/Photos/modify-iam-role.png)
-
-Now let's connect with the ec2 instance using ec2 instance connect
-
-![Alt text](/Photos/role.png)
-
-as you can see when the role is attached you don't have to give your credentials.
-
 # Security Groups and Bootstrap Scripts
 
 > Note -
->
 > -   Linux : SSH - PORT 22
 > -   Windows : RDP - PORT 3389
 > -   HTTP : WEB BROWSING - PORT 80
-> -   HTTPS : ENCRYPTED WEB BROWSING (SSL) - 443
+> -   HTTPS : ENCRYPTED WEB BROWSING (SSL) - PORT 443
 
 ## Security Groups :
 
@@ -566,28 +542,6 @@ yum service httpd start
 
 _Adding these tasks at boot time adds to the amount of time it takes to boot the instance.
 However, it allows you to automate the installation of applications._
-
-### Now let's use scripting
-
-1. Head over to ec2 and hit launch instance
-2. Create security grp rules
-   ![Alt text](/Photos/ec2-security-grp.png)
-3. Then go to the advanced details and scroll to the bottom and paste this script :
-
-```
-#!/bin/bash
-yum update -y
-yum install httpd -y
-systemctl start httpd
-systemctl enable httpd
-cd /var/www/html
-echo "<html><body><h1>Hello Cloud Gurus</h1></body></html>" > index.html
-```
-
-Now hit create.
-
-![Alt text](/Photos/sec-grp-details.png)
-When your ec2 instance starts running then select the instance and and copy the `Public IPv4 address` and paste it into your browser and done.
 
 ## EC2 Metadata & Userdata
 
