@@ -28,6 +28,9 @@ against best practices and identify areas for improvement.
 
 ---
 
+![alt text](/Photos/image.png)
+![alt text](/Photos/image2.png)
+
 # Identity Access Management
 
 ![alt text](/Photos/aws-iam.png)
@@ -40,7 +43,7 @@ _IAM offers a centralized hub of control within AWS and integrates with all othe
 -   Create groups and roles.
 -   Control access to AWS resources.
 
-## What is root account ?
+## Root account :
 
 The root account is the email address you used to sign up for AWS. The root account has full administrative access to AWS. **For this reason, it is important to secure this account**.
 
