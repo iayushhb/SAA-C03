@@ -173,9 +173,10 @@ As S3 works on a key value principle -
 ### Securing your data with ACLs and Bucket Policies :
 
 -   ACLs(Access Control Lists) : To secure object on an individual level.
-![Video](https://www.youtube.com/watch?v=XHWvg2DjwAY)
--   Bucket Policies : To secure objects on an entire bucket level.
 
+    [![video](https://i9.ytimg.com/vi/XHWvg2DjwAY/mqdefault.jpg?sqp=CIS8ua4G-oaymwEmCMACELQB8quKqQMa8AEB-AH-CIAC0AWKAgwIABABGFUgQChyMA8=&rs=AOn4CLBMVAeOrbeE6MuA35hDz39CNNKjpg)](https://youtu.be/XHWvg2DjwAY)
+
+-   Bucket Policies : To secure objects on an entire bucket level.
 
 ## Versioning in S3 -
 
