@@ -178,7 +178,12 @@ As S3 works on a key value principle -
 
 -   Bucket Policies : To secure objects on an entire bucket level.
 
+    [![Watch the video](https://i9.ytimg.com/vi/XNkYOYnTdL8/mqdefault.jpg?sqp=CIS8ua4G-oaymwEmCMACELQB8quKqQMa8AEB-AH-BYAC4AOKAgwIABABGBMgVCh_MA8=&rs=AOn4CLAelKYp9F1w6tSLttUU7WcqMSl3tA)](https://www.youtube.com/watch?v=XNkYOYnTdL8)
+
 ## Versioning in S3 -
+
+[![Watch the video](https://i9.ytimg.com/vi/_oO6xjMu0f8/mqdefault.jpg?sqp=CJDRua4G-oaymwEmCMACELQB8quKqQMa8AEB-AH-BYAC4AOKAgwIABABGEYgWShyMA8=&rs=AOn4CLCEFRAXklciJf80K7ZzfmT_sFZxgA)](https://youtu.be/_oO6xjMu0f8)
+
 
 You can enable versioning in S3 so you can have multiple versions of an object within S3.
 
@@ -187,6 +192,10 @@ You can enable versioning in S3 so you can have multiple versions of an object w
 -   Cannot Be Disabled : Once enabled, versioning cannot be disabled — only suspended.
 -   Lifecycle Rules : Can be integrated with lifecycle rules so you can set rules to expire or migrate data based on their version.
 -   Supports MFA : Versioning also has MFA delete capability to provide an additional layer of security.
+
+_If you enable versioning before creating your bucket then all objects will have a version id._
+
+*If you upload new versions of objects then the bucket policy will only be applied on the new ones.*
 
 ## Amazon S3 Storage Classes
 
