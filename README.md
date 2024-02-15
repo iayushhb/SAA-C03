@@ -5,6 +5,7 @@
 -   [`S3`](#simple-storage-service)
 -   [`EC2`](#elastic-compute-cloudec2)
 -   [`EBS and EFS`](#elastic-block-storage-and-elastic-file-system)
+
 ---
 
 # AWS Well-Architected Framework
@@ -31,6 +32,8 @@ against best practices and identify areas for improvement.
 ![alt text](/Photos/image.png)
 ![alt text](/Photos/image2.png)
 
+---
+
 # Identity Access Management
 
 ![alt text](/Photos/aws-iam.png)
@@ -46,6 +49,8 @@ _IAM offers a centralized hub of control within AWS and integrates with all othe
 ## Root account :
 
 The root account is the email address you used to sign up for AWS. The root account has full administrative access to AWS. **For this reason, it is important to secure this account**.
+
+When you create the account you get two more generated items which are _access keys and secret access keys_ which are basically id and password for programatic access.
 
 ## 4 Steps to Secure Your AWS Root Account.
 
@@ -101,7 +106,9 @@ Explicit Allow: Allows access to a particular resource so long as there is not a
 
 Default Deny (or Implicit Deny): IAM identities start off with no resource access. Access instead must be granted.
 
----
+### Identity providers and federation :
+
+## If you already manage user identities outside of AWS, you can use identity providers instead of creating IAM users in your AWS account. With an identity provider (IdP), you can manage your user identities outside of AWS and give these external user identities permissions to use AWS resources in your account. This is useful if your organization already has its own identity system, such as a corporate user directory. It is also useful if you are creating a mobile app or web application that requires access to AWS resources.
 
 # Simple Storage Service
 
@@ -163,6 +170,13 @@ As S3 works on a key value principle -
 2. _Access Control Lists (ACLs)_ : Define which AWS accounts or groups are granted access and the type of access. You can attach S3 ACLs to individual objects within a bucket.
 3. _Bucket Policies_ : S3 bucket policies specify what actions are allowed or denied (e.g., allow user Alice to PUT but not DELETE objects in the bucket).
 
+### Securing your data with ACLs and Bucket Policies :
+
+-   ACLs(Access Control Lists) : To secure object on an individual level.
+![Video](https://www.youtube.com/watch?v=XHWvg2DjwAY)
+-   Bucket Policies : To secure objects on an entire bucket level.
+
+
 ## Versioning in S3 -
 
 You can enable versioning in S3 so you can have multiple versions of an object within S3.
@@ -172,21 +186,6 @@ You can enable versioning in S3 so you can have multiple versions of an object w
 -   Cannot Be Disabled : Once enabled, versioning cannot be disabled — only suspended.
 -   Lifecycle Rules : Can be integrated with lifecycle rules so you can set rules to expire or migrate data based on their version.
 -   Supports MFA : Versioning also has MFA delete capability to provide an additional layer of security.
-
-## Versioning demo in the AWS console -
-
-1. First create a S3 bucket.
-2. Go to the created bucket, then head to properties then hit edit button and enable versioning.
-3. Now upload your files.
-4. Make a change in your uploaded file locally and reupload it again with same name.
-5. Now to see your object versions , hit show versions and done.
-
-> You'll get something like this.
-> ![Alt text](/Photos/s3-versioning.png)
-
-> When you upload a new version of an object the previous version gets private and only new version becomes public.
-
-> Now to make older versions public just go to that specific version then go to object actions from top right then click make public.
 
 ## Amazon S3 Storage Classes
 
@@ -516,6 +515,7 @@ An IAM role is an IAM identity that you can create in your account that has spec
 # Security Groups and Bootstrap Scripts
 
 > Note -
+>
 > -   Linux : SSH - PORT 22
 > -   Windows : RDP - PORT 3389
 > -   HTTP : WEB BROWSING - PORT 80
