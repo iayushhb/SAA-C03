@@ -443,8 +443,6 @@ Replication enables automatic, asynchronous copying of objects across Amazon S3 
 Amazon Elastic Compute Cloud (Amazon EC2) provides on-demand, scalable computing capacity in the Amazon Web Services (AWS) Cloud. Using Amazon EC2 reduces hardware costs so you can develop and deploy applications faster. You can use Amazon EC2 to launch as many or as few virtual servers as you need, configure security and networking, and manage storage. You can add capacity (scale up) to handle compute-heavy tasks, such as monthly or yearly processes, or spikes in website traffic. When usage decreases, you can reduce capacity (scale down) again.
 Its configuration at launch is a live copy of the Amazon Machine Image (AMI) that you specify when you launched the instance.
 
-![alt text](image.png)
-
 > Like a VM, only hosted in AWS instead of your own data center.
 
 -   _Pay only for what you use_
