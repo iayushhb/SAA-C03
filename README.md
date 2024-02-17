@@ -83,6 +83,7 @@ _Example of a Policy Document:_
 `Groups` : any collection of similar people with shared permissions such as system administrators, HR employees, finance teams, etc. Each user within their specified group will inherit the permissions set for the group.
 
 `Roles` : any software service that needs to be granted permissions to do its job, e.g- AWS Lambda needing write permissions to S3 or a fleet of EC2 instances needing read permissions from a RDS MySQL database.
+It's similar to IAM user, however instead of being assiciated with one person , a role is intended to be assumed by anyone who needs it. Roles are temporary.
 
 > It's best practice for users to _inherit permissions_ from groups. And that’s because if you didn’t then it would harder to manage people individually.
 
@@ -178,12 +179,11 @@ As S3 works on a key value principle -
 
 -   Bucket Policies : To secure objects on an entire bucket level.
 
-    [![Watch the video](https://i9.ytimg.com/vi/XNkYOYnTdL8/mqdefault.jpg?sqp=CIS8ua4G-oaymwEmCMACELQB8quKqQMa8AEB-AH-BYAC4AOKAgwIABABGBMgVCh_MA8=&rs=AOn4CLAelKYp9F1w6tSLttUU7WcqMSl3tA)](https://www.youtube.com/watch?v=XNkYOYnTdL8)
+    [![Watch the video](https://i9.ytimg.com/vi/UW4y0gmOG5g/mqdefault.jpg?sqp=CKT0ua4G-oaymwEmCMACELQB8quKqQMa8AEB-AH-BYAC4AOKAgwIABABGFogXShlMA8=&rs=AOn4CLA0UVlgmevRn8UgnEchKCRyEPuXPg)](https://youtu.be/UW4y0gmOG5g)
 
 ## Versioning in S3 -
 
 [![Watch the video](https://i9.ytimg.com/vi/_oO6xjMu0f8/mqdefault.jpg?sqp=CJDRua4G-oaymwEmCMACELQB8quKqQMa8AEB-AH-BYAC4AOKAgwIABABGEYgWShyMA8=&rs=AOn4CLCEFRAXklciJf80K7ZzfmT_sFZxgA)](https://youtu.be/_oO6xjMu0f8)
-
 
 You can enable versioning in S3 so you can have multiple versions of an object within S3.
 
@@ -195,7 +195,7 @@ You can enable versioning in S3 so you can have multiple versions of an object w
 
 _If you enable versioning before creating your bucket then all objects will have a version id._
 
-*If you upload new versions of objects then the bucket policy will only be applied on the new ones.*
+_If you upload new versions of objects then the bucket policy will only be applied on the new ones._
 
 ## Amazon S3 Storage Classes
 
@@ -271,6 +271,14 @@ S3 Glacier Flexible Retrieval delivers low-cost storage, up to 10% lower cost (t
 
 S3 Glacier Deep Archive is Amazon S3’s lowest-cost storage class and supports long-term retention and digital preservation for data that may be accessed once or twice in a year. It is designed for customers—particularly those in highly-regulated industries, such as financial services, healthcare, and public sectors—that retain data sets for 7—10 years or longer to meet regulatory compliance requirements. S3 Glacier Deep Archive can also be used for backup and disaster recovery use cases, and is a cost-effective and easy-to-manage alternative to magnetic tape systems.
 ![Alt text](/Photos/Highest%20cost-1.png)
+
+## Lifecycle Management with S3
+
+-   Lifecycle Mangement automates moving your objects between different storage tiers, thereby maximizing cost effectiveness.
+-   Can be used in conjunction with versioning.
+-   Lifecycle rules can be applied to both current and previous versions of an object.
+
+[![Watch the video](https://i9.ytimg.com/vi/bZ3sks1ruXg/mqdefault.jpg?sqp=CMDaua4G-oaymwEmCMACELQB8quKqQMa8AEB-AH-BYAC4AOKAgwIABABGGAgYChgMA8%3D&rs=AOn4CLBmmu48s2JS6B4N_k5VI5DCkaWXgg&retry=4)](https://youtu.be/bZ3sks1ruXg)
 
 ## S3 Object Lock
 
@@ -413,7 +421,7 @@ Every time a file is uploaded to S3, a PUT request is initiated.
 -   If there's a failure in the download, it's only for a specific byte range.
     ![Alt text](/Photos/s3-performance-downloads.png)
 
-# Backing up Data with S3 Replication
+## Backing up Data with S3 Replication
 
 Replication enables automatic, asynchronous copying of objects across Amazon S3 buckets. Buckets that are configured for object replication can be owned by the same AWS account or by different accounts. You can replicate objects to a single destination bucket or to multiple destination buckets. The destination buckets can be in different AWS Regions or within the same Region as the source bucket.
 
@@ -424,6 +432,8 @@ Replication enables automatic, asynchronous copying of objects across Amazon S3 
 3. Delete markers are not replicated by default,
    Deleting individual versions or delete markers will not be replicated._If you delete an item in the source bucket then the object in the destination bucket will not be deleted_
 
+    [![Watch the video](https://i9.ytimg.com/vi/I19dMeKkms8/mqdefault.jpg?sqp=CKT0ua4G-oaymwEmCMACELQB8quKqQMa8AEB-AH-CIAC0AWKAgwIABABGFcgQihyMA8=&rs=AOn4CLDmc4ORTB7eHOMUR0ZxRD1HpWjuZw)](https://youtu.be/I19dMeKkms8)
+
 ---
 
 # Elastic Compute Cloud(EC2)
@@ -431,6 +441,7 @@ Replication enables automatic, asynchronous copying of objects across Amazon S3 
 ![Alt text](/Photos/ec2-logo.png)
 
 Amazon Elastic Compute Cloud (Amazon EC2) provides on-demand, scalable computing capacity in the Amazon Web Services (AWS) Cloud. Using Amazon EC2 reduces hardware costs so you can develop and deploy applications faster. You can use Amazon EC2 to launch as many or as few virtual servers as you need, configure security and networking, and manage storage. You can add capacity (scale up) to handle compute-heavy tasks, such as monthly or yearly processes, or spikes in website traffic. When usage decreases, you can reduce capacity (scale down) again.
+Its configuration at launch is a live copy of the Amazon Machine Image (AMI) that you specify when you launched the instance
 
 > Like a VM, only hosted in AWS instead of your own data center.
 
@@ -463,6 +474,12 @@ EC2 has an extremely reduced time frame for provisioning and booting new instanc
 1. Save up to 72% : All AWS compute usage, regardless of instance type or Region.
 2. Commit to 1 or 3 Years : Commit to use a specific amount of compute power (measured by the hour) for a 1-year or 3-year period.
 3. Super Flexible : Not only EC2, this also includes serverless.
+
+#### Standard Reserved vs. Convertible Reserved vs. Scheduled Reserved:
+
+-   Standard Reserved Instances have inflexible reservations that are discounted at 75% off of On-Demand instances. Standard Reserved Instances cannot be moved between regions. You can choose if a Reserved Instance applies to either a specific Availability Zone, or an Entire Region, but you cannot change the region.
+-   Convertible Reserved Instances are instances that are discounted at 54% off of On-Demand instances, but you can also modify the instance type at any point. For example, you suspect that after a few months your VM might need to change from general purpose to memory optimized, but you aren't sure just yet. So if you think that in the future you might need to change your VM type or upgrade your VMs capacity, choose Convertible Reserved Instances. There is no downgrading instance type with this option though.
+-   Scheduled Reserved Instances are reserved according to a specified timeline that you set. For example, you might use Scheduled Reserved Instances if you run education software that only needs to be available during school hours. This option allows you to better match your needed capacity with a recurring schedule so that you can save money.
 
 ## Spot Instances -
 
@@ -611,11 +628,49 @@ echo "</h1></body></html>" >> index.html
 
 ## Networking with EC2
 
+### Security Groups
+
+Security Groups are used to control access (SSH, HTTP, RDP, etc.) with EC2. They act as a virtual firewall for your instances to control inbound and outbound traffic. When you launch an instance in a VPC, you can assign up to five security groups to the instance and security groups act at the instance level, not the subnet level.
+
+**Security Groups Key Details:**
+
+-   Security groups control inbound and outbound traffic for your instances (they act as a Firewall for EC2 Instances) while NACLs control inbound and outbound traffic for your subnets (they act as a Firewall for Subnets). Security Groups usually control the list of ports that are allowed to be used by your EC2 instances and the NACLs control which network or list of IP addresses can connect to your whole VPC.
+-   Every time you make a change to a security group, that change occurs immediately
+-   Whenever you create an inbound rule, an outbound rule is created immediately. This is because Security Groups are stateful. This means that when you create an ingress rule for a security group, a corresponding egress rule is created to match it. This is in contrast with NACLs which are stateless and require manual intervention for creating both inbound and outbound rules.
+-   Security Group rules are based on ALLOWs and there is no concept of DENY when in comes to Security Groups. This means you cannot explicitly deny or blacklist specific ports via Security Groups, you can only implicitly deny them by excluding them in your ALLOWs list
+-   Because of the above detail, everything is blocked by default. You must go in and intentionally allow access for certain ports.
+-   Security groups are specific to a single VPC, so you can't share a Security Group between multiple VPCs. However, you can copy a Security Group to create a new Security Group with the same rules in another VPC for the same AWS Account.
+-   Security Groups are regional and can span AZs, but can't be cross-regional.
+-   Outbound rules exist if you need to connect your server to a different service such as an API endpoint or a DB backend. You need to enable the ALLOW rule for the correct port though so that traffic can leave EC2 and enter the other AWS service.
+-   You can attach multiple security groups to one EC2 instance and you can have multiple EC2 instances under the umbrella of one security group
+-   You can specify the source of your security group (basically who is allowed to bypass the virtual firewall) to be a single /32 IP address, an IP range, or even a separate security group.
+-   You cannot block specific IP addresses with Security Groups (use NACLs instead)
+-   You can increase your Security Group limit by submitting a request to AWS
+
 You can attach 3 types of virtual networking cards to your EC2 instances.
 
 **An ENI will be attached by default to the ec2 instance you create.**
 
-## Elastic Network Interfaces
+### Elastic Network Interfaces
+
+**ENI Simplified:** An elastic network interface is a networking component that represents a virtual network card. When you provision a new instance, there will be an ENI attached automatically and you can create and configure additional network interfaces if desired. When you move a network interface from one instance to another, network traffic is redirected to the new instance.
+
+**ENI Key Details:**
+
+-   ENI is used mainly for low-budget, high-availability network solutions.
+
+-   However, if you suspect you need high network throughput then you can use Enhanced Networking ENI.
+-   Enhanced Networking ENI uses single root I/O virtualization to provide high-performance networking capabilities on supported instance types. SR-IOV provides higher I/O and lower throughput and it ensures higher bandwidth, higher packet per second (PPS) performance, and consistently lower inter-instance latencies. SR-IOV does this by dedicating the interface to a single instance and effectively bypassing parts of the Hypervisor which allows for better performance.
+-   Adding more ENIs won’t necessarily speed up your network throughput, but Enhanced Networking ENI will.
+-   There is no extra charge for using Enhanced Networking ENI and the better network performance it provides. The only downside is that Enhanced Networking ENI is not available on all EC2 instance families and types.
+-   You can attach a network interface to an EC2 instance in the following ways:
+    -   When it's running (hot attach)
+    -   When it's stopped (warm attach)
+    -   When the instance is being launched (cold attach).
+-   If an EC2 instance fails with ENI properly configured, you (or more likely,the code running on your behalf) can attach the network interface to a hot standby instance. Because ENI interfaces maintain their own private IP addresses, Elastic IP addresses, and MAC address, network traffic will begin to flow to the standby instance as soon as you attach the network interface on the replacement instance. Users will experience a brief loss of connectivity between the time the instance fails and the time that the network interface is attached to the standby instance, but no changes to the VPC route table or your DNS server are required.
+-   For instances that work with Machine Learning and High Performance Computing, use EFA (Elastic Fabric Adaptor). EFAs accelerate the work required from the above use cases. EFA provides lower and more consistent latency and higher throughput than the TCP transport traditionally used in cloud-based High Performance Computing systems.
+-   EFA can also use OS-bypass (on linux only) that will enable ML and HPC applications to interface with the Elastic Fabric Adaptor directly, rather than be normally routed to it through the OS. This gives it a huge performance increase.
+-   You can enable a VPC flow log on your network interface to capture information about the IP traffic going to and from a network interface.
 
 An elastic network interface is a logical networking component in a VPC that represents a virtual network card. It can include the following attributes:
 
@@ -639,7 +694,7 @@ Create a low-budget, high available solutions.
 _The default ENI of an EC2 instance :_
 ![Alt text](/Photos/eni-ec2.png)
 
-## Enhanced networking on Linux
+## Enhanced Networking on Linux
 
 **For high performance networking between 10Gbps - 100Gbps**
 
@@ -657,7 +712,7 @@ _Contents_ -
 -   Troubleshoot ENA
 -   Improve network latency on Linux instances
 
-#### Enhanced networking support :
+#### Enhanced Networking support :
 
 All current generation instance types support enhanced networking, except for T2 instances.
 
@@ -762,10 +817,85 @@ Outposts brings the AWS data center directly to you, on-premises. Outposts allow
 
 # Elastic Block Storage and Elastic File System
 
-Amazon Elastic Block Store (Amazon EBS) provides block level storage volumes for use with EC2 instances. EBS volumes behave like raw, unformatted block devices. You can mount these volumes as devices on your instances. EBS volumes that are attached to an instance are exposed as storage volumes that persist independently from the life of the instance. You can create a file system on top of these volumes, or use them in any way you would use a block device (such as a hard drive). You can dynamically change the configuration of a volume attached to an instance.
+An Amazon EBS volume is a durable, block-level storage device that you can attach to a single EC2 instance. You can think of EBS as a cloud-based virtual hard disk. You can use EBS volumes as primary storage for data that requires frequent updates, such as the system drive for an instance or storage for a database application. You can also use them for throughput-intensive applications that perform continuous disk scans.
 
 ![Alt text](/Photos/ebs-logo.png)
 
 We recommend Amazon EBS for data that must be quickly accessible and requires long-term persistence. EBS volumes are particularly well-suited for use as the primary storage for file systems, databases, or for any applications that require fine granular updates and access to raw, unformatted, block-level storage. Amazon EBS is well suited to both database-style applications that rely on random reads and writes, and to throughput-intensive applications that perform long, continuous reads and writes.
 
+**EBS Usecase** :
+
+-   Create a file system.
+-   Run a database.
+-   Run an operating system.
+-   Store Data.
+-   Install applications.
+
 _With Amazon EBS, you pay only for what you use._
+
+**Features** :
+
+-   Designed for mission-critical workloads.
+-   Automatically replicate within a single AZ to protect against hardware failures.
+-   Dynamically increase capacity and change the volume type with no downtown or performance impact to your live systems.
+
+### EBS Volume Types :
+
+-   **SSD**(Solid State Disk) :
+
+    -   _General Purpose SSD(gp2)_:
+        _A balance of price and performance._
+
+        1. 3 IOPS per GiB, upto a maximum of 16000 IOPS per volume.
+
+        2. gp2 volumes smaller than 1 TB can burst upto 30000 IOPS.
+
+        3. Good for boot volumes or development and test applications that are not latency sensitive.
+
+    -   _General Purpose SSD(gp3)_:
+
+        1. Predictable 3,000 IOPS baseline performance and 125 MiB/s regardless of volume size.
+        2. Ideal for applications that require high performance at a low cost, such as MySQL, Cassandra, virtual desktops, and Hadoop analytics.
+        3. Customers looking for higher performance can scale up to 16,000 IOPS and 1,000 MiB/s for an additional fee.
+        4. The top performance of gp3 is 4 times faster than max throughput of gp2 volumes.
+
+    -   _Provisioned IOPS SSD (io1)_:
+
+        The high-performance option and the most expensive
+
+        1. Up to 64,000 IOPS per volume. 50 1OPS per GiB.
+
+        2. Use if you need more than 16,000 IOPS.
+
+        3. Designed for I/O-intensive applications, large databases, and latency-sensitive workloads.
+
+    -   _Provisioned IOPS SSD (io2)_:
+
+        Latest generation. Higher durability and more IOPS, i02 is the same price as i01.
+
+        1. 500 IOPS per GiB. Up to 64,000 IOPS.
+
+        2. 99.999% durability instead of up to 999%.
+
+        3. 1/0-intensive apps, large databases, and latency-sensitive workloads.Applications that need high levels of durability.
+
+-   **HDD**(Hard Disk Drive) - MB/s Intensive:
+    -   _Throughput Optimized HDD (st1)_:
+        Low-cost HDD volume.
+        1. Baseline throughput of 40 MB/s per TB
+        2. Ability to burst up to 250 MB/s per TB
+        3. Maximum throughput of 500 MB/s per volume
+        4. Frequently accessed, throughput-intensive workloads
+        5. Big data, data warehouses, ETL, and log processing
+        6. A cost-effective way to store mountains of data
+        7. Cannot be a boot volume
+    -   _COLD HDD (SC1)_:
+        Lowest Cost Option.
+        1. Baseline throughput of 12 MB/s per TB
+        2. Ability to burst up to 80 MB/s per TB
+        3. Max throughput of 250 MB/s per volume
+        4. A good choice for colder data requiring fewer scans per day
+        5. Good for applications that need the lowest cost and performance is not a factor
+        6. Cannot be a boot volume
+
+![alt text](/Photos/iopsvsthru.jpeg)
