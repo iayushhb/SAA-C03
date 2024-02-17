@@ -441,7 +441,9 @@ Replication enables automatic, asynchronous copying of objects across Amazon S3 
 ![Alt text](/Photos/ec2-logo.png)
 
 Amazon Elastic Compute Cloud (Amazon EC2) provides on-demand, scalable computing capacity in the Amazon Web Services (AWS) Cloud. Using Amazon EC2 reduces hardware costs so you can develop and deploy applications faster. You can use Amazon EC2 to launch as many or as few virtual servers as you need, configure security and networking, and manage storage. You can add capacity (scale up) to handle compute-heavy tasks, such as monthly or yearly processes, or spikes in website traffic. When usage decreases, you can reduce capacity (scale down) again.
-Its configuration at launch is a live copy of the Amazon Machine Image (AMI) that you specify when you launched the instance
+Its configuration at launch is a live copy of the Amazon Machine Image (AMI) that you specify when you launched the instance.
+
+![alt text](image.png)
 
 > Like a VM, only hosted in AWS instead of your own data center.
 
@@ -449,6 +451,7 @@ Its configuration at launch is a live copy of the Amazon Machine Image (AMI) tha
 -   _Select the capacity right now, grow and shrink when you need_
 
 EC2 has an extremely reduced time frame for provisioning and booting new instances and EC2 ensures that you pay as you go, pay for what you use, pay less as you use more, and pay even less when you reserve capacity. When your EC2 instance is running, you are charged on CPU, memory, storage, and networking. When it is stopped, you are only charged for EBS storage.
+
 
 ## EC2 Pricing Options
 
@@ -627,6 +630,8 @@ echo "</h1></body></html>" >> index.html
    ![Alt text](/Photos/metadata-page.png)
 
 ## Networking with EC2
+**An ENI will be attached by default to the ec2 instance you create.**
+
 
 ### Security Groups
 
@@ -649,7 +654,6 @@ Security Groups are used to control access (SSH, HTTP, RDP, etc.) with EC2. They
 
 You can attach 3 types of virtual networking cards to your EC2 instances.
 
-**An ENI will be attached by default to the ec2 instance you create.**
 
 ### Elastic Network Interfaces
 
@@ -683,13 +687,6 @@ An elastic network interface is a logical networking component in a VPC that rep
 -   One or more security groups
 -   A MAC address
 -   A source/destination check flag
-
-### ENIs can be useful in following key reasons.
-
-Creating a Management Network
-Use Network and Security Appliances in your VPC
-Create dual-homed instances with workloads / roles on distinct subnets
-Create a low-budget, high available solutions.
 
 _The default ENI of an EC2 instance :_
 ![Alt text](/Photos/eni-ec2.png)
@@ -734,9 +731,11 @@ EFAs provide lower and more consistent latency and higher throughput than the TC
 
 Elastic Network Adapters (ENAs) provide traditional IP networking features that are required to support VPC networking. EFAs provide all of the same traditional IP networking features as ENAs, and they also support OS-bypass capabilities. OS-bypass enables HPC and machine learning applications to bypass the operating system kernel and to communicate directly with the EFA device.
 
+>*Note* : By default, the public IP address of an EC2 Instance is released when the instance is stopped even if its stopped temporarily. Therefore, it is best to refer to an instance by its external DNS hostname. If you require a persistent public IP address that can be associated to the same instance, use an Elastic IP address which is basically a static IP address instead.
+
 ## Optimizing with EC2 Placement Groups
 
-When you launch a new EC2 instance, the EC2 service attempts to place the instance in such a way that all of your instances are spread out across underlying hardware to minimize correlated failures. You can use placement groups to influence the placement of a group of interdependent instances to meet the needs of your workload. Depending on the type of workload, you can create a placement group using one of the following placement strategies:
+Placement groups balance the tradeoff between risk tolerance and network performance when it comes to your fleet of EC2 instances. The more you care about risk, the more isolated you want your instances to be from each other. The more you care about performance, the more conjoined you want your instances to be with each other.
 
 1. Cluster – packs instances close together inside an Availability Zone. This strategy enables workloads to achieve the low-latency network performance necessary for tightly-coupled node-to-node communication that is typical of high-performance computing (HPC) applications.
    ![Alt text](/Photos/cluster-ec2.png)
@@ -816,12 +815,13 @@ Outposts brings the AWS data center directly to you, on-premises. Outposts allow
 ---
 
 # Elastic Block Storage and Elastic File System
-
+---
+# EBS 
 An Amazon EBS volume is a durable, block-level storage device that you can attach to a single EC2 instance. You can think of EBS as a cloud-based virtual hard disk. You can use EBS volumes as primary storage for data that requires frequent updates, such as the system drive for an instance or storage for a database application. You can also use them for throughput-intensive applications that perform continuous disk scans.
 
 ![Alt text](/Photos/ebs-logo.png)
 
-We recommend Amazon EBS for data that must be quickly accessible and requires long-term persistence. EBS volumes are particularly well-suited for use as the primary storage for file systems, databases, or for any applications that require fine granular updates and access to raw, unformatted, block-level storage. Amazon EBS is well suited to both database-style applications that rely on random reads and writes, and to throughput-intensive applications that perform long, continuous reads and writes.
+We reccommend Amazon EBS for data that must be quickly accessible and requires long-term persistence. EBS volumes are particularly well-suited for use as the primary storage for file systems, databases, or for any applications that require fine granular updates and access to raw, unformatted, block-level storage. Amazon EBS is well suited to both database-style applications that rely on random reads and writes, and to throughput-intensive applications that perform long, continuous reads and writes.
 
 **EBS Usecase** :
 
@@ -836,8 +836,8 @@ _With Amazon EBS, you pay only for what you use._
 **Features** :
 
 -   Designed for mission-critical workloads.
--   Automatically replicate within a single AZ to protect against hardware failures.
 -   Dynamically increase capacity and change the volume type with no downtown or performance impact to your live systems.
+- Amazon EBS provides the ability to create snapshots (backups) of any EBS volume and write a copy of the data in the volume to S3, where it is stored redundantly in multiple Availability Zones
 
 ### EBS Volume Types :
 
@@ -899,3 +899,39 @@ _With Amazon EBS, you pay only for what you use._
         6. Cannot be a boot volume
 
 ![alt text](/Photos/iopsvsthru.jpeg)
+
+>EBS Snapshots are point in time copies of volumes. You can think of Snapshots as photographs of the disk’s current state and the state of everything within it.
+
+
+### EBS Encryption -
+
+EBS encrypts your volume with a data key using the industry-standard AES-256 algorithm. Amazon EBS encryption uses AWS Key Management Service (AWS KMS) customer master keys (CMK) when creating encrypted volumes and snapshots.
+
+#### What Happens When You Encrypt an EBS Volume?
+
+-   Data at rest is encrypted inside the volume.
+-   All data in flight moving between the instance and the volume is encrypted.
+-   All snapshots are encrypted.
+-   All volumes created from the snapshot are encrypted.
+
+---
+
+Encryption Explored -
+
+-   Handled Transparently :
+    Encryption and decryption are handled transparently (you don't need to do anything).
+-   Latency :
+    Encryption has a minimal
+-   Copying :
+    Copying an unencrypted snapshot allows encryption.
+-   Snapshots :
+    Snapshots of encrypted volumes are encrypted.
+-   Root Device Volumes :
+    You can now encrypt root device volumes upon creation.
+
+#### Steps to Encrypt an Unencrypted Volume :
+
+- Create a snapshot of the unencrypted root device volume.
+- Create a copy of the snapshot and select the encrypt option.
+- Create an AMI from the encrypted snapshot.
+- Use that AMI to launch new encrypted instances.
