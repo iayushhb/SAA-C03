@@ -1120,6 +1120,8 @@ It can include other services, such as database technologies like RDS and Dynamo
 
 Amazon Relational Database Service (Amazon RDS) is a web service that makes it easier to set up, operate, and scale a relational database in the AWS Cloud. It provides cost-efficient, resizable capacity for an industry-standard relational database and manages common database administration tasks.
 
+RDS runs on virtual machines, but you do not have access to those machines. You cannot SSH into an RDS instance so therefore you cannot patch the OS. This means that AWS is responsible for the security and maintenance of RDS. You can provision an EC2 instance as a database if you need or want to manage the underlying server yourself, but not with an RDS engine.
+
 **Relational Database Engines** :
 
 -   SQL Server
@@ -1128,6 +1130,8 @@ Amazon Relational Database Service (Amazon RDS) is a web service that makes it e
 -   PostgreSQL
 -   Maria DB
 -   Aurora
+
+**Multi-AZ is supported for all DB flavors except aurora. This is because Aurora is completely fault-tolerant on its own.**
 
 _RDS has two key features when scaling out:_
 
@@ -1138,3 +1142,234 @@ _RDS has two key features when scaling out:_
 > RDS is generally used for Online Transaction Processing (OLTP) workloads.
 
 ![alt text](/Photos/oltpvsolap.png)
+
+> With Multi-AZ RDS creates an exact copy of your production database in another AZ.
+> ![alt text](/Photos/rdsmultiaz.png)
+> RDS will automatically fail over to the standby during a failure so database operations can resume quickly without administrative intervention.
+
+> Multi AZ is for disaster recovery not for performance improvement. i.e you can't pass queries to your standby DB.
+
+_With a Multi-AZ RDS configuration, backups are taken from the standby._
+
+#### Improve RDS Performance :
+
+![alt text](/Photos/readreplica.png)
+A read replica is a read-only copy of your primary database.
+
+Great for read-heavy workloads and takes the load off your primary database.
+
+**Details -**
+
+1. With a Read Replica configuration, EC2 connects to the RDS backend using a DNS address and every write that is received by the master database is also passed onto a DB secondary so that it becomes a perfect copy of the master. This has the overall effect of reducing the number of transactions on the master because the secondary DBs can be queried for the same data.
+2. However, if the master DB were to fail, there is no automatic failover. You would have to manually create a new connection string to sync with one of the read replicas so that it becomes a master on its own. Then you’d have to update your EC2 instances to point at the read replica. You can have up to five copies of your master DB with read replication.
+3. Each Read Replica will have its own DNS endpoint.
+4. Automated backups must be enabled in order to use read replicas.
+5. You can have read replicas with Multi-AZ turned on or have the read replica in an entirely separate region. You can even have read replicas of read replicas, but watch out for latency or replication lag. The caveat for Read Replicas is that they are subject to small amounts of replication lag. This is because they might be missing some of the latest transactions as they are not updated as quickly as primaries. Application designers need to consider which queries have tolerance to slightly stale data. Those queries should be executed on the read replica, while those demanding completely up-to-date data should run on the primary node.
+6. You can promote read replicas to be their very own production database if needed. But it breaks the replication.
+
+## Amazon Aurora
+
+Aurora is the AWS flagship DB known to combine the performance and availability of traditional enterprise databases with the simplicity and cost-effectiveness of open source databases. It is a MySQL/PostgreSQL-compatible RDBMS that provides the security, availability, and reliability of commercial databases at 1/10th the cost of competitors. It is far more effective as an AWS database due to the 5x and 3x performance multipliers for MySQL and PostgreSQL respectively.
+
+**Details :**
+
+-   Start with 10 GB. Scales in 10-GB increments to 128 TB (storage Auto Scaling).
+-   Compute resources can scale up to 96 vCPUs and 768 GB of memory.
+-   2 copies of your data are contained in each Availability Zone, with a minimum of 3 Availability Zones. 6 copies of your data.
+-   Amazon Aurora typically involves a cluster of DB instances instead of a single instance. Each connection is handled by a specific DB instance. When you connect to an Aurora cluster, the host name and port that you specify point to an intermediate handler called an endpoint. Aurora uses the endpoint mechanism to abstract these connections. Thus, you don't have to hard code all the host names or write your own logic for load-balancing and rerouting connections when some DB instances aren't available.
+-   Automated backups are always enabled on Aurora instances and backups don’t impact DB performance. You can also take snapshots which also don’t impact performance. Your snapshots can be shared across AWS accounts.
+
+**Scaling Aurora** :
+
+-   Aurora is designed to transparently handle the loss of up to 2 copies of data without affecting database write availability and up to 3 copies without affecting read availability.
+-   Aurora storage is also self-healing. Data blocks and disks are continuously scanned for errors and repaired automatically.
+
+_Types of Aurora Replicas available -_
+![alt text](/Photos/aurora-replica.png)
+
+![alt text](/Photos/image3.png)
+
+### Amazon Aurora Serverless
+
+An on-demand, auto-scaling configuration for the MySQL-compatible and PostgreSQL-compatible editions of Amazon Aurora. An Aurora Serverless DB cluster automatically starts up, shuts down, and scales capacity up or down based on your application's needs.
+
+## DynamoDB
+
+Amazon DynamoDB is a key-value and document database that delivers single-digit millisecond performance at any scale. It's a fully managed, multiregion, multimaster, durable non-SQL database. It comes with built-in security, backup and restore, and in-memory caching for internet-scale applications.
+
+**DynamoDB Key Details:**
+
+-   The main components of DynamoDB are:
+
+    -   a collection which serves as the foundational table
+    -   a document which is equivalent to a row in a SQL database
+    -   key-value pairs which are the fields within the document or row
+
+-   The convenience of non-relational DBs is that each row can look entirely different based on your use case. There doesn't need to be uniformity. For example, if you need a new column for a particular entry you don't also need to ensure that that column exists for the other entries.
+
+-   Stored on SSD storage
+-   Spread across 3 geographically distinct data centers
+-   Eventually consistent reads (by default)
+-   Strongly consistent reads
+
+The difference between the two consistency models is the one second rule. With Eventual Consistent Reads, all copies of data are usually identical within one second after a write operation. A repeated read after a short period of time should return the updated data. However, if you need to read updated data within or less than a second and this needs to be a guarantee, then strongly consistent reads are your best bet.
+
+-   DynamoDB supports both document and key-value based models. It is a great fit for mobile, web, gaming, ad-tech, IoT, etc.
+
+-   If you face a scenario that requires the schema, or the structure of your data, to change frequently, then you have to pick a database which provides a non-rigid and flexible way of adding or removing new types of data. This is a classic example of choosing between a relational database and non-relational (NoSQL) database. In this scenario, pick DynamoDB.
+
+-   A relational database system does not scale well for the following reasons:
+
+    -   It normalizes data and stores it on multiple tables that require multiple queries to write to disk.
+    -   It generally incurs the performance costs of an ACID-compliant transaction system.
+    -   It uses expensive joins to reassemble required views of query results.
+
+-   High cardinality is good for DynamoDB I/O performance. The more distinct your partition key values are, the better. It makes it so that the requests sent will be spread across the partitioned space.
+-   DynamoDB makes use of parallel processing to achieve predictable performance. You can visualize each partition or node as an independent DB server of fixed size with each partition or node responsible for a defined block of data. In SQL terminology, this concept is known as sharding but of course DynamoDB is not a SQL-based DB. With DynamoDB, data is stored on Solid State Drives (SSD).
+
+### DynamoDB Accelerator (DAX):
+
+-   Amazon DynamoDB Accelerator (DAX) is a fully managed, highly available, in-memory cache that can reduce Amazon DynamoDB response times from milliseconds to microseconds, even at millions of requests per second.
+-   No need for developers to manage caching logic.
+    ![alt text](/Photos/image4.png)
+-   Pay-per-request pricing
+-   Balance cost and performance
+-   No minimum capacity
+-   Pay more per request than with provisioned capacity
+-   Used for new product launches
+-   Encyption at rest using KMS
+-   Can connect to dynamo DB using a site-to-site VPN and also can use direct connect.
+
+![alt text](/Photos/image5.png)
+
+> With dynamoDB you cannot make concurrent updates to multiple tables at the same time
+> and with dynamoDB transactions you're able to do exactly that.
+
+**DynamoDB transactions** provide developers atomicity, consistency, isolation, and durability
+(ACID) across 1 or more tables within a single AWS account and region.
+You can use transactions when building applications that require coordinated inserts, deletes, or updates to multiple items as part of a single logical business operation.
+
+### On-Demand Backup and Restore -
+
+-   Full backups at any time
+-   Zero impact on table performance or availability
+-   Consistent within seconds and retained until deleted
+-   Operates within same region as the source table
+
+### Point-in-Time Recovery (PITR) -
+
+-   Protects against accidental writes or deletes
+-   Restore to any point in the last 35 days
+-   Incremental backups
+-   Not enabled by default
+-   Latest restorable: 5 minutes in the past
+
+### DynamoDB Streams:
+
+![alt text](/Photos/image6.png)
+A DynamoDB stream is an ordered flow of information about changes to items in an Amazon DynamoDB table. When you enable a stream on a table, DynamoDB captures information about every modification to data items in the table.
+
+-   Amazon DynamoDB is integrated with AWS Lambda so that you can create triggers—pieces of code that automatically respond to events in DynamoDB Streams.
+-   Immediately after an item in the table is modified, a new record appears in the table's stream. AWS Lambda polls the stream and invokes your Lambda function synchronously when it detects new stream records. The Lambda function can perform any actions you specify, such as sending a notification or initiating a workflow.
+-   With triggers, you can build applications that react to data modifications in DynamoDB tables.
+-   Whenever an application creates, updates, or deletes items in the table, DynamoDB Streams writes a stream record with the primary key attribute(s) of the items that were modified. A stream record contains information about a data modification to a single item in a DynamoDB table. You can configure the stream so that the stream records capture additional information, such as the "before" and "after" images of modified items.
+
+### DynamoDB Global Tables :
+
+Global Tables is a multi-region, multi-master replication solution for fast local performance of globally distributed apps.
+Global Tables replicates your Amazon DynamoDB tables automatically across your choice of AWS regions.
+
+-   It is based on DynamoDB streams and is multi-region redundant for data recovery or high availability purposes. Application failover is as simple as redirecting your application’s DynamoDB calls to another AWS region.
+-   Global Tables eliminates the difficult work of replicating data between regions and resolving update conflicts, enabling you to focus on your application’s business logic. You do not need to rewrite your applications to make use of Global Tables.
+-   Replication latency with Global Tables is typically under one second.
+-   To create a global table you need global streams turned on.
+
+### Operating MongoDB-Compatible Databases in Amazon DocumentDB :
+
+MongoDB is a document database that allows for scalability and flexibility with your data as well as robust querying and indexing features.
+
+### Amazon DocumentDB
+
+Allows you to run MongoDB on the AWS cloud. It's a managed database service that scales with your workloads and safely and durably stores your database information.
+
+![alt text](/Photos/image7.png)
+
+**UseCase -**
+
+You no longer have to worry about all the manual tasks when running MongoDB workloads, such as cluster management software, configuring backups, or monitoring production workloads.
+
+_Get rid of your operational overheads!_
+
+### Cassandra
+
+A distributed database (i.e., it runs on many machines) that uses NoSQL. It's primarily used for big data solutions.
+
+Enterprises, such as Netflix, use Cassandra on their backend.
+
+### Amazon Keyspaces
+
+![alt text](/Photos/image8.png)
+Amazon's Apache Cassandra database service. It allows you to run Cassandra workloads on AWS and is a fully managed database service.
+
+-   It's a fully managed database service - you don't need to worry about managing servers, software, patching, etc.
+-   Keyspaces is serverless!
+-   You pay for only the resources you use, and the service can automatically scale tables up and down in response to your applications.
+
+### Graph Database
+
+A graph database stores nodes and relationships instead of tables or documents.
+
+### Neptune
+
+_Neptune is Amazon's graph database service._
+
+Neptune is a fast, reliable, fully managed graph database service that makes it easy to build and run applications.
+
+**Use Cases for Neptune :**
+
+-   Easily build identity graphs for identity resolution solutions such as social graphs, and accelerate updates for ad targeting, personalization, and analytics.
+-   Add topical data to product catalogs, model general information, and help users quickly navigate highly connected datasets.
+-   Build graph queries for near real-time identity fraud pattern detection in financial and purchase transactions.
+-   Proactively detect and investigate IT
+    infrastructure using a layered security approach.
+    Visualize all infrastructure to plan, predict, and mitigate risk.
+
+### Ledger Database
+
+It's a NoSQL database that is immutable, transparent, and has a cryptographically verifiable transaction log that is owned by one authority.
+
+You cannot update a record (i.e., replace old content) in a ledger database. Instead, an update adds a new record to the database.
+
+-   It's used for
+    cryptocurrencies, such as Bitcoin, Ethereum, etc.
+-   Shipping companies use it to track items, boxes, shipping containers, deliveries, etc.
+-   Pharmaceutical companies use it to track creation and distribution of drugs and ensure no counterfeits are produced.
+
+### Amazon Quantum Ledger Database (QLDB)
+
+![alt text](/Photos/image9.png)
+
+A fully managed ledger database that provides a transparent, immutable, and cryptographically verifiable transaction log.
+
+**QLD Use Cases** :
+
+-   Create a complete and accurate record of all financial transactions, such as credit and debit transactions.
+-   Record the history of each transaction, and provide details of every batch manufactured, shipped, stored, and sold from facility to store.
+-   Track a claim over its lifetime, and cryptographically verify data integrity to make the application resilient against data entry errors and manipulation.
+-   Implement a system-of-record application tocreate a complete, centralized record of employee details, such as payroll, bonus, and benefits.
+
+### Time-Series Data
+
+Data points that are logged over a series of time, allowing you to track your data. Examples could be temperature readings from weather stations around the world, on the hour, every hour for years.
+
+_Time-Series Data Examples :_
+
+-   IoT sensors relay thousands, millions, and billions of points of information depending on the setup. One use case is for agriculture.
+-   Large websites such as Netflix serve millions of users per second. Need to analyze incoming and outgoing web traffic.
+-   Applications that change in response to users needs may need to be monitored continuously so they can scale correctly.
+
+### Amazon Timestream
+![alt text](/Photos/image10.png)
+
+A serverless, fully managed database service for time-series data. You can analyze trillions of events per day up to 1,000 times faster and at as little as
+1/10th the cost of traditional relational databases.
