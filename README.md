@@ -450,7 +450,6 @@ Its configuration at launch is a live copy of the Amazon Machine Image (AMI) tha
 
 EC2 has an extremely reduced time frame for provisioning and booting new instances and EC2 ensures that you pay as you go, pay for what you use, pay less as you use more, and pay even less when you reserve capacity. When your EC2 instance is running, you are charged on CPU, memory, storage, and networking. When it is stopped, you are only charged for EBS storage.
 
-
 ## EC2 Pricing Options
 
 ### On Demand Instances -
@@ -628,8 +627,8 @@ echo "</h1></body></html>" >> index.html
    ![Alt text](/Photos/metadata-page.png)
 
 ## Networking with EC2
-**An ENI will be attached by default to the ec2 instance you create.**
 
+**An ENI will be attached by default to the ec2 instance you create.**
 
 ### Security Groups
 
@@ -651,7 +650,6 @@ Security Groups are used to control access (SSH, HTTP, RDP, etc.) with EC2. They
 -   You can increase your Security Group limit by submitting a request to AWS
 
 You can attach 3 types of virtual networking cards to your EC2 instances.
-
 
 ### Elastic Network Interfaces
 
@@ -729,7 +727,7 @@ EFAs provide lower and more consistent latency and higher throughput than the TC
 
 Elastic Network Adapters (ENAs) provide traditional IP networking features that are required to support VPC networking. EFAs provide all of the same traditional IP networking features as ENAs, and they also support OS-bypass capabilities. OS-bypass enables HPC and machine learning applications to bypass the operating system kernel and to communicate directly with the EFA device.
 
->*Note* : By default, the public IP address of an EC2 Instance is released when the instance is stopped even if its stopped temporarily. Therefore, it is best to refer to an instance by its external DNS hostname. If you require a persistent public IP address that can be associated to the same instance, use an Elastic IP address which is basically a static IP address instead.
+> _Note_ : By default, the public IP address of an EC2 Instance is released when the instance is stopped even if its stopped temporarily. Therefore, it is best to refer to an instance by its external DNS hostname. If you require a persistent public IP address that can be associated to the same instance, use an Elastic IP address which is basically a static IP address instead.
 
 ## Optimizing with EC2 Placement Groups
 
@@ -813,8 +811,11 @@ Outposts brings the AWS data center directly to you, on-premises. Outposts allow
 ---
 
 # Elastic Block Storage and Elastic File System
+
 ---
-# EBS 
+
+# EBS
+
 An Amazon EBS volume is a durable, block-level storage device that you can attach to a single EC2 instance. You can think of EBS as a cloud-based virtual hard disk. You can use EBS volumes as primary storage for data that requires frequent updates, such as the system drive for an instance or storage for a database application. You can also use them for throughput-intensive applications that perform continuous disk scans.
 
 ![Alt text](/Photos/ebs-logo.png)
@@ -835,7 +836,7 @@ _With Amazon EBS, you pay only for what you use._
 
 -   Designed for mission-critical workloads.
 -   Dynamically increase capacity and change the volume type with no downtown or performance impact to your live systems.
-- Amazon EBS provides the ability to create snapshots (backups) of any EBS volume and write a copy of the data in the volume to S3, where it is stored redundantly in multiple Availability Zones
+-   Amazon EBS provides the ability to create snapshots (backups) of any EBS volume and write a copy of the data in the volume to S3, where it is stored redundantly in multiple Availability Zones
 
 ### EBS Volume Types :
 
@@ -898,8 +899,29 @@ _With Amazon EBS, you pay only for what you use._
 
 ![alt text](/Photos/iopsvsthru.jpeg)
 
->EBS Snapshots are point in time copies of volumes. You can think of Snapshots as photographs of the disk’s current state and the state of everything within it.
+### Volumes :
 
+THINK OF VOLUME AS A VIRTUAL HARD DISK
+Volumes are simply virtual hard disks. You need a minimum of 1 volume per EC2 instance. This is called the root device volume.
+
+### Snapshot :
+
+-   Think of snapshots as a photograph of the virtual disk/volume.
+-   When you take a snapshot, it is a point-in-time copy of a volume.
+-   This means only the data that has been changed since your last snapshot are moved to S3. This saves dramatically on space and the time it takes to take a snapshot.
+-   If it is your first snapshot, it may take some time to create as there is no previous point-in-time copy.
+
+#### Tips -
+
+-   Snapshots only capture data that has been written to your Amazon EBS volume, which might exclude any data that has been locally cached by your application or OS. For a consistent snapshot, it is recommended you stop the instance and take a snap.
+-   If you take a snapshot of an encrypted EBS volume, the snapshot will be encrypted automatically.
+-   You can share snapshots, but only in the region in which they were created. To share to other regions, you will need to copy them to the destination region first.
+
+#### EBS Details :
+
+-   Your EBS volumes will always be in the same AZ as the EC2 instance to which it is attached.
+-   You can resize EBS volumes on the fly. You do not need to stop or restart the instance. However, you will need to extend the filesystem in the OS so the OS can see the resized volume.
+-   You can change volume types on the fly (e.g., go from gp2 to io2). You do not need to stop or restart the instance.
 
 ### EBS Encryption -
 
@@ -916,20 +938,203 @@ EBS encrypts your volume with a data key using the industry-standard AES-256 alg
 
 Encryption Explored -
 
--   Handled Transparently :
-    Encryption and decryption are handled transparently (you don't need to do anything).
--   Latency :
-    Encryption has a minimal
--   Copying :
-    Copying an unencrypted snapshot allows encryption.
--   Snapshots :
-    Snapshots of encrypted volumes are encrypted.
--   Root Device Volumes :
-    You can now encrypt root device volumes upon creation.
+-   Encryption and decryption are handled transparently (you don't need to do anything).
+-   Encryption has a minimal
+-   Copying an unencrypted snapshot allows encryption.
+-   Snapshots of encrypted volumes are encrypted.
+-   You can now encrypt root device volumes upon creation.
 
 #### Steps to Encrypt an Unencrypted Volume :
 
-- Create a snapshot of the unencrypted root device volume.
-- Create a copy of the snapshot and select the encrypt option.
-- Create an AMI from the encrypted snapshot.
-- Use that AMI to launch new encrypted instances.
+-   Create a snapshot of the unencrypted root device volume.
+-   Create a copy of the snapshot and select the encrypt option.
+-   Create an AMI from the encrypted snapshot.
+-   Use that AMI to launch new encrypted instances.
+
+> We have learned so far we can stop and terminate
+> EC2 instances. If we stop the instance, the data is kept on the disk (with EBS) and will remain on the disk until the EC2 instance is started. If the instance is terminated, then by default the root device volume will also be terminated. But we can save it if we want while launching an instance.
+
+#### EC2 Hibernation :
+
+When you hibernate an EC2 instance, the operating system is told to perform hibernation (suspend-to-disk). Hibernation saves the contents from the instance memory (RAM) to your Amazon EBS root volume. We persist the instance's Amazon EBS root volume and any attached Amazon
+EBS data volumes.
+
+_When you start your instance out of hibernation:_
+
+-   The Amazon EBS root volume is restored to its previous state.
+-   The RAM contents are reloaded.
+-   The processes that were previously running on the instance are resumed.
+-   Previously attached data volumes are reattached and the instance retains its instance ID.
+    ![alt text](/Photos/hibernation.png)
+
+With EC2 hibernation, the instance boots much faster. The operating system does not need to reboot because the in-memory state (RAM) is preserved. This is useful for:
+
+-   Long-running processes
+-   Services that take time to initialize
+
+**What You Need to Know about E2C Hibernation**
+
+-   EC2 hibernation preserves the in-memory RAM on persistent storage (EBS).
+-   Much faster to boot up because you do not need to reload the operating system.
+    V Instance RAM must be less than 150 GB.
+-   Instance families include instances in General Purpose, Compute, Memory and Storage Optimized groups.
+-   Available for Windows, Amazon Linux 2 AMI, and Ubuntu.
+-   Instances can't be hibernated for more than 60 days.
+-   Available for On-Demand instances and Reserved Instances.
+
+---
+
+# EFS
+
+-   Managed NFS (network file system) that can be mounted on many EC2 instances.
+-   EFS works with EC2 instances in multiple Availability Zones.
+-   Highly available and scalable; however, it is expensive.
+    ![alt text](/Photos/efs.png)
+
+#### Use Cases :
+
+-   Content Management. Can share content between ec2 instances easily.
+-   Great for web servers. Can have a single folder structure for your website.
+
+#### Key Details :
+
+-   The EC2 instances communicate to the remote file system using the NFSv4 protocol. This makes it required to open up the NFS port for our security group (EC2 firewall rules) to allow inbound traffic on that port.
+-   Compatible with Linux-based AMI (Windows not supported at this time)
+-   Encryption at rest using KMS
+-   File system scales automatically; no capacity planning required
+-   Pay per use
+-   It is best for file storage that is accessed by a fleet of servers rather than just one server
+
+#### EFS Performance :
+
+-   EFS can support thousands of concurrent connections (EC2 instances).
+-   EFS can handle up to 10 Gbps in throughput.
+-   Scale your storage to petabytes.
+
+#### Controlling Performance :
+
+When creating an EFS file system, you can set what performance characteristics you want.
+
+-   General Purpose : Used for things like web servers, CMS, etc.
+-   Max I/O :
+    Used for big data, media processing, etc.
+
+### Storage Tiers :
+
+EFS comes with storage tiers and lifecycle management, allowing you to move your data from one tier to another after X number of days.
+
+-   Standard :
+    For frequently accessed files
+-   Infrequently Accessed :
+    For files not
+    frequently accessed
+
+### FSx for Windows :
+
+Amazon FSx for Windows File Server provides a fully managed native Microsoft Windows file system so you can easily move your Windows-based applications that require file storage to AWS.
+
+AMAZON FSX IS BUILT ON WINDOWS SERVER.
+
+![alt text](/Photos/fsx.png)
+
+### Amazon FSx for Lustre :
+
+A fully managed file system that is optimized for compute-intensive workloads
+
+-   High Performance Computing
+-   Machine Learning
+-   Media Data Processing Workflows
+-   Electronic Design Automation
+
+### FSx for Lustre Performance
+
+With Amazon FS, you can launch and run a Lustre file system that can process massive datasets at up to hundreds of gigabytes per second of throughput, millions of IOPS, and sub-millisecond latencies.
+
+#### Storage Class Usecases :
+
+-   _EFS_: When you need distributed, highly resilient storage for Linux instances and Linux-based applications.
+-   _Amazon FSx for Windows_: When you need centralized storage for Windows-based applications, such as SharePoint, Microsoft SQL Server, Workspaces, IIS Web Server, or any other native Microsoft application.
+-   _Amazon FSx for Lustre_: When you need high-speed, high-capacity distributed storage. This will be for applications that do high performance computing (HPC), financial modeling, etc. Remember that FSx for Lustre can store data directly on S3.
+
+### AMI
+
+An Amazon Machine Image (AMI) provides the information required to launch an instance.
+
+_You must specify an AMl when you launch an instance._
+
+#### Things You Can Base Your AMI On -
+
+-   Region
+-   Operating system
+-   Architecture (32-bit or 64-bit)
+-   Launch permissions
+-   Storage for the root device (root device volume)
+
+**All AMIs are categorized as either backed by:**
+
+-   _Amazon EBS_ -
+    The root device for an instance launched from the AMI is an Amazon EBS volume created from an Amazon EBS snapshot.
+-   _Instance Store_ -
+    The root device for an instance launched from the AMl is an instance store volume created from a template stored in Amazon S3.
+
+### Instance Store Volumes -
+
+Instance store volumes are sometimes called ephemeral storage. Instance store volumes cannot be stopped. If the underlying host fails, you will lose your data.
+You can, however, reboot the instance without losing your data.
+
+If you delete the instance, you will lose the instance store volume.
+
+### EBS Volumes -
+
+EBS-backed instances can be stopped. You will not lose the data on this instance if it is stopped. You can also reboot an EBS volume and not lose your data.
+
+By default, the root device volume will be deleted on termination. However, you can tell AWS to keep the root device volume with EBS volumes.
+
+> If you use an EBS-backed root volume, the root volume will not be terminated with its EC2 instance when the instance is brought offline. EBS-backed volumes are not temporary storage devices like Instance Store-backed volumes.
+
+### AWS Backup
+
+Backup allows you to consolidate your backups across multiple AWS services, such as EC2, EBS, EFS, Amazon FSx for Lustre, Amazon FSx for Windows File Server, and AWS Storage Gateway.
+
+It can include other services, such as database technologies like RDS and DynamoDB.
+
+> Backup can be used with AWS
+> Organizations to back up multiple AWS accounts in your organization.
+> It gives you centralized control across all AWS services, in multiple AWS accounts across the entire AWS organization.
+
+**Benefits :**
+
+-   _Central Management_ :
+    Use a single, central backup console, allowing you to centralize your backups across multiple AWS services and multiple AWS accounts.
+-   _Improved Compliance_ :
+    Backup policies can be enforced while backups can be encrypted both at rest and in transit, allowing alignment to regulatory compliance.
+    Auditing is made easy due to a consolidated view of backups across many AWS services.
+-   _Automation_ :
+    You can create automated backup schedules and retention policies. You can also create lifecycle policies, allowing you to expire unnecessary backups after a period of time.
+
+# Databases
+
+## Relational Database Service (RDS)
+
+![alt text](/Photos/rds.png)
+
+Amazon Relational Database Service (Amazon RDS) is a web service that makes it easier to set up, operate, and scale a relational database in the AWS Cloud. It provides cost-efficient, resizable capacity for an industry-standard relational database and manages common database administration tasks.
+
+**Relational Database Engines** :
+
+-   SQL Server
+-   Oracle
+-   MySQL
+-   PostgreSQL
+-   Maria DB
+-   Aurora
+
+_RDS has two key features when scaling out:_
+
+-   Read replication for improved performance
+-   Multi-AZ for high availability
+-   Automated backups
+
+> RDS is generally used for Online Transaction Processing (OLTP) workloads.
+
+![alt text](/Photos/oltpvsolap.png)
