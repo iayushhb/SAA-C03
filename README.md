@@ -109,7 +109,7 @@ Default Deny (or Implicit Deny): IAM identities start off with no resource acces
 
 ### Identity providers and federation :
 
-## If you already manage user identities outside of AWS, you can use identity providers instead of creating IAM users in your AWS account. With an identity provider (IdP), you can manage your user identities outside of AWS and give these external user identities permissions to use AWS resources in your account. This is useful if your organization already has its own identity system, such as a corporate user directory. It is also useful if you are creating a mobile app or web application that requires access to AWS resources.
+If you already manage user identities outside of AWS, you can use identity providers instead of creating IAM users in your AWS account. With an identity provider (IdP), you can manage your user identities outside of AWS and give these external user identities permissions to use AWS resources in your account. This is useful if your organization already has its own identity system, such as a corporate user directory. It is also useful if you are creating a mobile app or web application that requires access to AWS resources.
 
 # Simple Storage Service
 
@@ -1369,7 +1369,33 @@ _Time-Series Data Examples :_
 -   Applications that change in response to users needs may need to be monitored continuously so they can scale correctly.
 
 ### Amazon Timestream
+
 ![alt text](/Photos/image10.png)
 
 A serverless, fully managed database service for time-series data. You can analyze trillions of events per day up to 1,000 times faster and at as little as
 1/10th the cost of traditional relational databases.
+
+---
+
+# Virtual Private Cloud (VPC) Networking
+
+VPC lets you provision a logically isolated section of the AWS cloud where you can launch services and systems within a virtual network that you define. By having the option of selecting which AWS resources are public facing and which are not, VPC provides much more granular control over security.
+
+_You get a default VPC in every region in your AWS account._
+
+-   You can think of VPC as your own virtual data center in the cloud. You have complete control of your own network; including the IP range, the creation of sub-networks (subnets), the configuration of route tables and the network gateways used.
+
+-   You can create a hardware Virtual Private Network (VPN) connection between your corporate data center and your VPC and leverage the AWS Cloud as an extension of your corporate data center.
+
+**Network Diagram :**
+![alt text](/Photos/image11.png)
+
+### VPC Features -
+
+-   Launch instances into a subnet of your choosing.
+-   Assign custom IP address ranges in each subnet.
+-   Configure route tables between subnets.
+-   Create internet gateway and attach it to our VPC.
+-   Much better security control over your AWS resources.
+-   Subnet network access control lists.
+-   _You can use network access control lists (NACLs) to block specific IP addresses._
