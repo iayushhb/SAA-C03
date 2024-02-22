@@ -1379,7 +1379,9 @@ A serverless, fully managed database service for time-series data. You can analy
 
 # Virtual Private Cloud (VPC) Networking
 
-VPC lets you provision a logically isolated section of the AWS cloud where you can launch services and systems within a virtual network that you define. By having the option of selecting which AWS resources are public facing and which are not, VPC provides much more granular control over security.
+With Amazon Virtual Private Cloud (Amazon VPC), you can launch AWS resources in a logically isolated virtual network that you've defined. This virtual network closely resembles a traditional network that you'd operate in your own data center, with the benefits of using the scalable infrastructure of AWS. By having the option of selecting which AWS resources are public facing and which are not, VPC provides much more granular control over security.
+
+![alt text](/Photos/image12.png)
 
 _You get a default VPC in every region in your AWS account._
 
@@ -1390,7 +1392,7 @@ _You get a default VPC in every region in your AWS account._
 **Network Diagram :**
 ![alt text](/Photos/image11.png)
 
-### VPC Features -
+### VPC Details -
 
 -   Launch instances into a subnet of your choosing.
 -   Assign custom IP address ranges in each subnet.
@@ -1399,3 +1401,294 @@ _You get a default VPC in every region in your AWS account._
 -   Much better security control over your AWS resources.
 -   Subnet network access control lists.
 -   _You can use network access control lists (NACLs) to block specific IP addresses._
+
+### Features --
+
+-   **Subnets** :
+    If a network has a large number of hosts without logically grouped subdivisions, managing the many hosts can be a tedious job. Therefore you use subnets to divide a network so that management becomes easier.
+-   **IP addressing** :
+    You can assign IP addresses, both IPv4 and IPv6, to your VPCs and subnets. You can also bring your public IPv4 addresses and IPv6 GUA addresses to AWS and allocate them to resources in your VPC, such as EC2 instances, NAT gateways, and Network Load Balancers.
+
+-   **Routing** :
+    Use route tables to determine where network traffic from your subnet or gateway is directed.
+
+-   **Gateways and endpoints** :
+    A gateway connects your VPC to another network. For example, use an internet gateway to connect your VPC to the internet. Use a VPC endpoint to connect to AWS services privately, without the use of an internet gateway or NAT device.
+
+-   **Peering connections** :
+    Use a VPC peering connection to route traffic between the resources in two VPCs.
+
+-   **Traffic Mirroring** :
+    Copy network traffic from network interfaces and send it to security and monitoring appliances for deep packet inspection.
+
+-   **Transit gateways** :Use a transit gateway, which acts as a central hub, to route traffic between your VPCs, VPN connections, and AWS Direct Connect connections.
+
+-   **VPC Flow Logs** :
+    A flow log captures information about the IP traffic going to and from network interfaces in your VPC.
+
+-   **VPN connections** :
+    Connect your VPCs to your on-premises networks using AWS Virtual Private Network (AWS VPN).
+
+> Amazon always reserves five IP addresses within a subnet. The first four IP addresses and the last IP address of each subnet CIDR block will always be unavailable for use.
+
+### NAT Gateways :
+
+You can use a network address translation (NAT) gateway to enable instances in a private subnet to connect to the internet or other AWS services while preventing the internet from initiating a connection with those instances.
+
+-   Redundant inside the Availability Zone
+-   Starts at 5 Gbps and scales currently to 45 Gbps
+-   No need to patch
+-   Not associated with security groups
+-   Automatically assigned a public IP address
+
+![alt text](/Photos/image13.png)
+
+### Network Access Control Lists:
+
+Network Access Control Lists (or NACLs) are like security groups but for subnets rather than instances. The main difference between security groups and NACLs is that security groups are stateful, meaning you can perform both allow and deny rules that may be divergent, depending if traffic is inbound or outbound, for that rule.
+
+| NACL                                                                                                                                                                                   | Security Group                                                                                                                                               |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Operates at the subnet level                                                                                                                                                           | Operates at the instance level                                                                                                                               |
+| Supports allow rules and deny rules                                                                                                                                                    | Supports allow rules only                                                                                                                                    |
+| Is stateless: Return traffic must be explicitly allowed by rules                                                                                                                       | Is stateful: Return traffic is automatically allowed, regardless of any rules                                                                                |
+| We process rules in order, starting with the lowest numbered rule, when deciding whether to allow traffic                                                                              | We evaluate all rules before deciding whether to allow traffic                                                                                               |
+| Automatically applies to all instances in the subnets that it's associated with (therefore, it provides an additional layer of defense if the security group rules are too permissive) | Applies to an instance only if someone specifies the security group when launching the instance, or associates the security group with the instance later on |
+
+-   Because NACLs are stateless, you must also ensure that outbound rules exist alongside the inbound rules so that ingress and egress can flow smoothly.
+
+-   The default NACL that comes with a new VPC has a default rule to allow all inbounds and outbounds. This means that it exists, but doesn't do anything as all traffic passes through it freely.
+
+    However, when you create a new NACL (instead of using the default that comes with the VPC) the default rules will deny all inbounds and outbounds.
+
+-   NACLs are evaluated before security groups and you block malicious IPs with NACLs, not security groups.
+-   You can associate a network ACL with multiple subnets; however, a subnet can be associated with only 1 network ACL at a time. When you associate a network ACL with a subnet, the previous association is removed.
+-   Network ACLs contain a numbered list of rules that are evaluated in order, starting with the lowest numbered rule.
+
+#### NAT Instances vs. NAT Gateways:
+
+Attaching an Internet Gateway to a VPC allows instances with public IPs to directly access the internet. NAT does a similar thing, however it is for instances that do not have a public IP. It serves as an intermediate step which allow private instances to first mask their own private IP as the NAT's public IP before accessing the internet.
+
+You would want your private instances to access the internet so that they can have normal software updates. NAT prevents any initiating of a connection from the internet.
+
+NAT instances are individual EC2 instances that perform the function of providing private subnets a means to securely access the internet.
+
+Because they are individual instances, High Availability is not a built-in feature and they can become a choke point in your VPC. They are not fault-tolerant and serve as a single point of failure. While it is possible to use auto-scaling groups, scripts to automate failover, etc. to prevent bottlenecking, it is far better to use the NAT Gateway as an alternative for a scalable solution.
+
+NAT Gateway is a managed service that is composed of multiple instances linked together within an availability zone in order to achieve HA by default.
+
+To achieve further HA and a zone-independent architecture, create a NAT gateway for each Availability Zone and configure your routing to ensure that resources use the NAT gateway in their corresponding Availability Zone.
+
+NAT instances are deprecated, but still useable. NAT Gateways are the preferred means to achieve Network Address Translation.
+
+There is no need to patch NAT Gateways as the service is managed by AWS. You do need to patch NAT Instances though because they’re just individual EC2 instances.
+
+Because communication must always be initiated from your private instances, you need a route rule to route traffic from a private subnet to your NAT gateway.
+
+Your NAT instance/gateway will have to live in a public subnet as your public subnet is the subnet configured to have internet access.
+
+When creating NAT instances, it is important to remember that EC2 instances have source/destination checks on them by default. What these checks do is ensure that any traffic it comes across must be either generated by the instance or be the intended recipient of that traffic. Otherwise, the traffic is dropped because the EC2 instance is neither the source nor the destination.
+
+So because NAT instances act as a sort of proxy, you must disable source/destination checks when musing a NAT instance.
+
+### Route Tables:
+
+Route tables are used to make sure that subnets can communicate with each other and that traffic knows where to go.
+
+Every subnet that you create is automatically associated with the main route table for the VPC.
+
+You can have multiple route tables. If you do not want your new subnet to be associated with the default route table, you must specify that you want it associated with a different route table.
+
+Because of this default behavior, there is a potential security concern to be aware of: if the default route table is public then the new subnets associated with it will also be public.
+
+The best practice is to ensure that the default route table where new subnets are associated with is private.
+
+This means you ensure that there is no route out to the internet for the default route table. Then, you can create a custom route table that is public instead. New subnets will automatically have no route out to the internet. If you want a new subnet to be publicly accessible, you can simply associate it with the custom route table.
+
+Route tables can be configured to access endpoints (public services accessed privately) and not just the internet.
+
+### Subnets :
+
+A subnet is a range of IP addresses in your VPC. A subnet must reside in a single Availability Zone. After you add subnets, you can deploy AWS resources in your VPC.
+
+Each subnet must reside entirely within one Availability Zone and cannot span zones. By launching AWS resources in separate Availability Zones, you can protect your applications from the failure of a single Availability Zone.
+
+The idea of subnetting is to take a portion of the host space of an address, and use it as an additional networking specification to divide the address space again.
+
+### Internet Gateway:
+
+If the Internet Gateway is not attached to the VPC, which is the prerequisite for instances to be accessed from the internet, then naturally instances in your VPC will not be reachable.
+
+If you want all of your VPC to remain private (and not just some subnets), then do not attach an IGW.
+
+When a Public IP address is assigned to an EC2 instance, it is effectively registered by the Internet Gateway as a valid public endpoint. However, each instance is only aware of its private IP and not its public IP. Only the IGW knows of the public IPs that belong to instances.
+
+When an EC2 instance initiates a connection to the public internet, the request is sent using the public IP as its source even though the instance doesn't know a thing about it. This works because the IGW performs its own NAT translation where private IPs are mapped to public IPs and vice versa for traffic flowing into and out of the VPC.
+
+So when traffic from the internet is destined for an instance's public IP endpoint, the IGW receives it and forwards the traffic onto the EC2 instance using its internal private IP.
+
+You can only have one IGW per VPC.
+
+**Summary: IGW connects your VPC with the internet.**
+A VPC endpoint enables you to privately connect your VPC to supported AWS services and VPC endpoint services powered by PrivateLink without requiring an internet gateway, NAT device, VPN connection, or AWS Direct Connect connection.
+
+_Instances in your VPC do not require public IP addresses to communicate with resources in the service._
+
+Traffic between your VPC and the other service does not leave the Amazon network.
+
+**Endpoints Are Virtual Devices.**
+They are horizontally scaled, redundant, and highly available VPC components that allow communication between instances in your VPC and services without imposing availability risks or bandwidth constraints on your network traffic.
+
+Types of Endpoints :
+
+-   INTERFACE ENDPOINTS : Interface Endpoints use AWS PrivateLink and have a private IP address so they are their own entity and not just a target in a route table. Because of this, they cost $.01/hour. Gateway Endpoints are free as they’re just a new route in to set.
+
+-   GATEWAY ENDPOINTS :
+    Gateway Endpoints rely on creating entries in a route table and pointing them to private endpoints used for S3 or DynamoDB. Gateway Endpoints are mainly just a target that you set.
+
+**Summary: VPC Endpoints connect your VPC with AWS services through a non-public tunnel.**
+
+### Multiple VPCs
+
+Sometimes you may need to have several VPCs for different environments, and it may be necessary to connect these VPCs to each other.
+
+![alt text](/Photos/image14.png)
+
+That's what VPC Peering is all about -
+
+### VPC Peering:
+
+VPC peering allows you to connect one VPC with another via a direct network route using the Private IPs belonging to both. With VPC peering, instances in different VPCs behave as if they were on the same network.
+
+You can create a VPC peering connection between your own VPCs, regardless if they are in the same region or not, and with a VPC in an entirely different AWS account.
+
+VPC Peering is usually done in such a way that there is one central VPC that peers with others. Only the central VPC can talk to the other VPCs.
+
+You cannot do transitive peering for non-central VPCs. Non-central VPCs cannot go through the central VPC to get to another non-central VPC. You must set up a new portal between non-central nodes if you need them to talk to each other.
+![alt text](/Photos/image16.png)
+
+The following diagram highlights the above idea. VPC B is free to communicate with VPC A with VPC Peering enabled between both. However, VPC B cannot continue the conversation with VPC C. Only VPC A can communicate with VPC C.
+![alt text](/Photos/image15.png)
+
+It is worth knowing what VPC peering configurations are not supported:
+
+-   Overlapping CIDR Blocks
+-   Transitive Peering
+-   Edge to Edge Routing through a gateway or connection device (VPN connection, Internet Gateway, AWS Direct Connect connection, etc.)
+
+You can peer across regions, but you cannot have one subnet stretched over multiple availability zones. However, you can have multiple subnets in the same availability zone.
+
+**Summary: VPC Peering connects your VPC to another VPC through a non-public tunnel.**
+
+### AWS PrivateLink:
+
+AWS PrivateLink simplifies the security of data shared with cloud-based applications by eliminating the exposure of data to the public Internet. AWS PrivateLink provides private connectivity between different VPCs, AWS services, and on-premises applications, securely on the Amazon network.
+
+It's similar to the AWS Direct Connect service in that it establishes private connections to the AWS cloud, except Direct Connect links on-premises environments to AWS. PrivateLink, on the other hand, secures traffic from VPC environments which are already in AWS.
+
+This is useful because different AWS services often talk to each other over the internet. If you do not want that behavior and instead want AWS services to only communicate within the AWS network, use AWS PrivateLink. By not traversing the Internet, PrivateLink reduces the exposure to threat vectors such as brute force and distributed denial-of-service attacks.
+
+PrivateLink allows you to publish an "endpoint" that others can connect with from their own VPC. It's similar to a normal VPC Endpoint, but instead of connecting to an AWS service, people can connect to your endpoint.
+
+Further, you'd want to use private IP connectivity and security groups so that your services function as though they were hosted directly on your private network.
+
+Remember that AWS PrivateLink applies to Applications/Services communicating with each other within the AWS network. For VPCs to communicate with each other within the AWS network, use VPC Peering.
+
+**Summary: AWS PrivateLink connects your AWS services with other AWS services through a non-public tunnel.**
+
+### Virtual Private Networks (VPNs):
+
+VPCs can also serve as a bridge between your corporate data center and the AWS cloud. With a VPC Virtual Private Network (VPN), your VPC becomes an extension of your on-prem environment.
+
+Naturally, your instances that you launch in your VPC can't communicate with your own on-premise servers. You can allow the access by first:
+
+-   attaching a virtual private gateway to the VPC
+-   creating a custom route table for the connection
+-   updating your security group rules to allow traffic from the connection
+-   creating the managed VPN connection itself.
+
+To bring up VPN connection, you must also define a customer gateway resource in AWS, which provides AWS information about your customer gateway device. And you have to set up an
+Internet-routable IP address of the customer gateway's external interface.
+
+A customer gateway is a physical device or software application on the on-premise side of the VPN connection.
+
+Although the term "VPN connection" is a general concept, a VPN connection for AWS always refers to the connection between your VPC and your own network. AWS supports Internet Protocol security (IPsec) VPN connections.
+
+The following diagram illustrates a single VPN connection :
+![alt text](/Photos/image17.png)
+
+The above VPC has an attached virtual private gateway (note: not an internet gateway) and there is a remote network that includes a customer gateway which you must configure to enable the VPN connection. You set up the routing so that any traffic from the VPC bound for your network is routed to the virtual private gateway.
+
+**Summary: VPNs connect your on-prem with your VPC over the internet.**
+
+#### AWS VPN CloudHub -
+
+If you have multiple sites, each with its own VPN connection, you can use AWS VPN CloudHub to connect those sites together.
+
+-   Hub-and-spoke model
+-   Low cost and easy to manage
+-   It operates over the public internet, but all traffic between the customer gateway and the AWS VPN CloudHub is encrypted.
+
+AWS VPN CloudHub is low cost and easy to manage. Though it operates over the public internet, all traffic between the customer gateway and the AWS VPN CloudHub is encrypted.
+
+### AWS DirectConnect:
+
+Direct Connect is an AWS service that establishes a dedicated network connection between your premises and AWS. You can create this private connectivity to reduce network costs, increase bandwidth, and provide more consistent network experience compared to regular internet-based connections.
+
+2 Types of Direct Connect Connection :
+
+-   _Dedicated Connection_: A physical
+    Ethernet connection associated with a single customer. Customers can request a dedicated connection through the AWS Direct Connect console, the CLI, or the API.
+
+-   _Hosted Connection_: A physical Ethernet
+    connection that an AWS Direct Connect
+    Partner provisions on behalf of a customer. Customers request a hosted connection by contacting a partner in the AWS Direct Connect Partner Program, who provisions the connection.
+
+The use case for Direct Connect is high throughput workloads or if you need a stable or reliable connection
+
+VPN connects to your on-prem over the internet and DirectConnect connects to your on-prem off through a private tunnel.
+
+The steps for setting up an AWS DirectConnect connection:
+
+-   Create a virtual interface in the DirectConnect console. This is a public virtual interface.
+-   Go to the VPC console and then VPN connections. Create a customer gateway for your on-premise.
+-   Create a virtual private gateway and attach it to the desired VPC environment.
+-   Select VPN connections and create a new VPN connection. Select both the customer gateway and the virtual private gateway.
+-   Once the VPN connection is available, set up the VPN either on the customer gateway or the on-prem firewall itself
+
+Data flow into AWS via DirectConnect looks like the following: On-prem router -> dedicated line -> your own cage / DMZ -> cross connect line -> AWS Direct Connect Router -> AWS backbone -> AWS Cloud
+
+![alt text](/Photos/image18.png)
+
+**Summary: DirectConnect connects your on-prem with your VPC through a non-public tunnel.**
+
+> VPNs vs. Direct Connect:
+>
+> VPNs allow private communication, but it still traverses the public internet to get the data delivered. While secure, it can be painfully slow.
+>
+> DIRECT CONNECT IS:
+>
+> -   Fast
+> -   Secure
+> -   Reliable
+> -   Able to take massive throughput
+
+### Transit Gateway
+
+AWS Transit Gateway connects VPCs and on-premises networks through a central hub. This simplifies your network and puts an end to complex peering relationships. It acts as a cloud router - each new connection is only made once.
+
+![alt text](/Photos/image19.png)
+
+-   Allows you to have transitive peering between thousands of VPCs and on-premises data centers.
+-   Works on a hub-and-spoke model.
+-   Works on a regional basis, but you can have it across multiple regions.
+-   You can use it across multiple AWS accounts using RAM (Resource Access Manager).
+
+#### 5G Networks
+
+5G provides mobile devices with higher speed, lower latency, and greater capacity than 4G LTE networks. It is one of the fastest, most robust technologies the world has ever seen.
+
+### AWS Wavelength
+AWS Wavelength embeds AWS
+compute and storage services within
+5G networks, providing mobile edge computing infrastructure for developing, deploying, and scaling ultra-low-latency applications.
