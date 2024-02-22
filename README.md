@@ -1,10 +1,13 @@
-# Theory for _AWS Certified Solutions Architect Associate_
+# Theory for _AWS Certified Solutions Architect Associate (SAA-CO3)_
 
 -   [`AWS Well-Architected Framework`](#aws-well-architected-framework)
 -   [`IAM`](#identity-access-management)
 -   [`S3`](#simple-storage-service)
 -   [`EC2`](#elastic-compute-cloudec2)
 -   [`EBS and EFS`](#elastic-block-storage-and-elastic-file-system)
+- [`DATABASES`](#databases)
+- [`VPC NETWORKING`](#virtual-private-cloud-vpc-networking)
+- [`ROUTE 53`](#route53)
 
 ---
 
