@@ -8,6 +8,7 @@
 -   [`DATABASES`](#databases)
 -   [`VPC NETWORKING`](#virtual-private-cloud-vpc-networking)
 -   [`ROUTE 53`](#route53)
+- [`Elastic Load Balancers`](#elastic-load-balancers-elb)
 
 ---
 
