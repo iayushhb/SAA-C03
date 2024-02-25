@@ -8,7 +8,7 @@
 -   [`DATABASES`](#databases)
 -   [`VPC NETWORKING`](#virtual-private-cloud-vpc-networking)
 -   [`ROUTE 53`](#route53)
-- [`Elastic Load Balancers`](#elastic-load-balancers-elb)
+-   [`Elastic Load Balancers`](#elastic-load-balancers-elb)
 
 ---
 
@@ -664,16 +664,15 @@ You can attach 3 types of virtual networking cards to your EC2 instances.
 -   ENI is used mainly for low-budget, high-availability network solutions.
 
 -   However, if you suspect you need high network throughput then you can use Enhanced Networking ENI.
--   Enhanced Networking ENI uses single root I/O virtualization to provide high-performance networking capabilities on supported instance types. SR-IOV provides higher I/O and lower throughput and it ensures higher bandwidth, higher packet per second (PPS) performance, and consistently lower inter-instance latencies. SR-IOV does this by dedicating the interface to a single instance and effectively bypassing parts of the Hypervisor which allows for better performance.
+
 -   Adding more ENIs won’t necessarily speed up your network throughput, but Enhanced Networking ENI will.
--   There is no extra charge for using Enhanced Networking ENI and the better network performance it provides. The only downside is that Enhanced Networking ENI is not available on all EC2 instance families and types.
+
 -   You can attach a network interface to an EC2 instance in the following ways:
     -   When it's running (hot attach)
     -   When it's stopped (warm attach)
     -   When the instance is being launched (cold attach).
 -   If an EC2 instance fails with ENI properly configured, you (or more likely,the code running on your behalf) can attach the network interface to a hot standby instance. Because ENI interfaces maintain their own private IP addresses, Elastic IP addresses, and MAC address, network traffic will begin to flow to the standby instance as soon as you attach the network interface on the replacement instance. Users will experience a brief loss of connectivity between the time the instance fails and the time that the network interface is attached to the standby instance, but no changes to the VPC route table or your DNS server are required.
--   For instances that work with Machine Learning and High Performance Computing, use EFA (Elastic Fabric Adaptor). EFAs accelerate the work required from the above use cases. EFA provides lower and more consistent latency and higher throughput than the TCP transport traditionally used in cloud-based High Performance Computing systems.
--   EFA can also use OS-bypass (on linux only) that will enable ML and HPC applications to interface with the Elastic Fabric Adaptor directly, rather than be normally routed to it through the OS. This gives it a huge performance increase.
+
 -   You can enable a VPC flow log on your network interface to capture information about the IP traffic going to and from a network interface.
 
 An elastic network interface is a logical networking component in a VPC that represents a virtual network card. It can include the following attributes:
@@ -689,6 +688,7 @@ An elastic network interface is a logical networking component in a VPC that rep
 -   A source/destination check flag
 
 _The default ENI of an EC2 instance :_
+
 ![Alt text](/Photos/eni-ec2.png)
 
 ## Enhanced Networking on Linux
@@ -738,7 +738,8 @@ Elastic Network Adapters (ENAs) provide traditional IP networking features that 
 Placement groups balance the tradeoff between risk tolerance and network performance when it comes to your fleet of EC2 instances. The more you care about risk, the more isolated you want your instances to be from each other. The more you care about performance, the more conjoined you want your instances to be with each other.
 
 1. Cluster – packs instances close together inside an Availability Zone. This strategy enables workloads to achieve the low-latency network performance necessary for tightly-coupled node-to-node communication that is typical of high-performance computing (HPC) applications.
-   ![Alt text](/Photos/cluster-ec2.png)
+
+    ![Alt text](/Photos/cluster-ec2.png)
 
 2. Partition – spreads your instances across logical partitions such that groups of instances in one partition do not share the underlying hardware with groups of instances in different partitions. This strategy is typically used by large distributed and replicated workloads, such as Hadoop, Cassandra, and Kafka.
    ![Alt text](/Photos/partition-ec2.png)
@@ -842,6 +843,12 @@ _With Amazon EBS, you pay only for what you use._
 -   Dynamically increase capacity and change the volume type with no downtown or performance impact to your live systems.
 -   Amazon EBS provides the ability to create snapshots (backups) of any EBS volume and write a copy of the data in the volume to S3, where it is stored redundantly in multiple Availability Zones
 
+#### EBS Details :
+
+-   Your EBS volumes will always be in the same AZ as the EC2 instance to which it is attached.
+-   You can resize EBS volumes on the fly. You do not need to stop or restart the instance. However, you will need to extend the filesystem in the OS so the OS can see the resized volume.
+-   You can change volume types on the fly (e.g., go from gp2 to io2). You do not need to stop or restart the instance.
+
 ### EBS Volume Types :
 
 -   **SSD**(Solid State Disk) :
@@ -920,12 +927,6 @@ Volumes are simply virtual hard disks. You need a minimum of 1 volume per EC2 in
 -   Snapshots only capture data that has been written to your Amazon EBS volume, which might exclude any data that has been locally cached by your application or OS. For a consistent snapshot, it is recommended you stop the instance and take a snap.
 -   If you take a snapshot of an encrypted EBS volume, the snapshot will be encrypted automatically.
 -   You can share snapshots, but only in the region in which they were created. To share to other regions, you will need to copy them to the destination region first.
-
-#### EBS Details :
-
--   Your EBS volumes will always be in the same AZ as the EC2 instance to which it is attached.
--   You can resize EBS volumes on the fly. You do not need to stop or restart the instance. However, you will need to extend the filesystem in the OS so the OS can see the resized volume.
--   You can change volume types on the fly (e.g., go from gp2 to io2). You do not need to stop or restart the instance.
 
 ### EBS Encryption -
 
@@ -1844,5 +1845,109 @@ _Disable Enable deregistration delay_ : Do this if you want your load balancer t
 
 -   Elastic Load Balancers (along with CloudFront) support Perfect Forward Secrecy. This is a feature that provides additional safeguards against the eavesdropping of encrypted data in transit through the use of a uniquely random session key. This is done by ensuring that the in-use part of an encryption system automatically and frequently changes the keys it uses to encrypt and decrypt information. So if this latest key is compromised at all, it will only expose a small portion of the user's recent data.
 
-- Classic Load Balancers do not support Server Name Indication (SNI). SNI allows the server (the LB in this case) to safely host multiple TLS Certificates for multiple sites all under a single IP address (the Alias record or CName record in this case). To allow SNI, you have to use an Application Load Balancer instead or use it with a CloudFront web distribution.
+-   Classic Load Balancers do not support Server Name Indication (SNI). SNI allows the server (the LB in this case) to safely host multiple TLS Certificates for multiple sites all under a single IP address (the Alias record or CName record in this case). To allow SNI, you have to use an Application Load Balancer instead or use it with a CloudFront web distribution.
 
+---
+
+# CloudWatch
+
+Amazon CloudWatch is a monitoring and observability service. It provides you with data and actionable insights to monitor your applications, respond to system-wide performance changes, optimize resource utilization, and get a unified view of operational health.
+
+![alt text](/Photos/image27.png)
+
+-   CloudWatch collects monitoring and operational data in the form of logs, metrics, and events.
+-   You can use CloudWatch to detect anomalous behavior in your environments, set alarms, visualize logs and metrics side by side, take automated actions, troubleshoot issues, and discover insights to keep your applications running smoothly.
+-   Within the compute domain, CloudWatch can inform you about the health of EC2 instances, Autoscaling Groups, Elastic Load Balancers, and Route53 Health Checks. Within the storage and content delivery domains, CloudWatch can inform you about the health of EBS Volumes, Storage Gateways, and CloudFront.
+-   With regards to EC2, CloudWatch can only monitor host level metrics such as CPU, network, disk, and status checks for insights like the health of the underlying hypervisor.
+-   CloudWatch is NOT CloudTrail so it is important to know that only CloudTrail can monitor AWS access for security and auditing reasons. CloudWatch is all about performance. CloudTrail is all about auditing.
+-   CloudWatch with EC2 will monitor events every 5 minutes by default, but you can have 1 minute intervals if you use Detailed Monitoring.
+-   You can customize your CloudWatch dashboards for insights.
+-   There is a multi-platform CloudWatch agent which can be installed on both Linux and Windows-based instances. This agent enables you to select the metrics to be collected, including sub-resource metrics such as per-CPU core. You can use this single agent to collect both system metrics and log files from Amazon EC2 instances and on-premises servers.
+
+-   _The following metrics are not collected from EC2 instances via CloudWatch:_
+    -   Memory utilization
+    -   Disk swap utilization
+    -   Disk space utilization
+    -   Page file utilization
+    -   Log collection
+-   **If you need information, then you can retrieve it via the official CloudWatch agent or you can create a custom metric and send the data on your own via a custom script.**
+
+-   _CloudWatch's key purpose:_
+    -   Collect metrics
+    -   Collect logs
+    -   Collect events
+    -   Create alarms
+    -   Create dashboards
+
+## CloudWatch Logs:
+
+-   You can use Amazon CloudWatch Logs to monitor, store, and access your log files from Amazon EC2 instances, AWS CloudTrail, Amazon Route 53, and other sources. You can then retrieve the associated log data from CloudWatch Logs.
+-   It helps you centralize the logs from all of your systems, applications, and AWS services that you use, in a single, highly scalable service.
+-   You can create log groups so that you join logical units of CloudWatch Logs together.
+-   You can stream custom log files for further insights.
+
+## Log Stream :
+
+A collection of log events from the same source creates a log stream. Think of one continuous set of logs from a single instance.
+
+## Log Group :
+
+This is a collection of log streams. For example, you would group all your Apache web server logs across hosts together.
+
+## CloudWatch Events:
+
+-   Amazon CloudWatch Events delivers a near real-time stream of system events that describe changes in AWS resources.
+
+-   You can use events to trigger lambdas for example while using alarms to inform you that something went wrong.
+
+## CloudWatch Alarms:
+
+-   CloudWatch alarms send notifications or automatically make changes to the resources you are monitoring based on rules that you define.
+-   For example, you can create custom CloudWatch alarms which will trigger notifications such as surpassing a set billing threshold.
+-   CloudWatch alarms have two states of either `ok` or `alarm`.
+
+## CloudWatch Metrics:
+
+-   CloudWatch Metrics represent a time-ordered set of data points.
+-   These basically are a variable you can monitor over time to help tell if everything is okay, e.g. Hourly CPU Utilization.
+-   CloudWatch Metrics allows you to track high resolution metrics at sub-minute intervals all the way down to per second.
+
+## CloudWatch Dashboards:
+
+-   CloudWatch dashboards are customizable home pages in the CloudWatch console that you can use to monitor your resources in a single view
+-   These dashboards integrate with CloudWatch Metrics and CloudWatch Alarms to create customized views of the metrics and alarms for your AWS resources.
+
+## Amazon Managed Grafana -
+
+Fully managed AWS service allowing secure data visualizations for instantly querying, correlating, and visualizing your operational metrics, logs, and traces from different sources.
+
+![alt text](/Photos/image28.png)
+
+-   Easily deploy, operate, and scale Grafana within your AWS accounts.
+-   Built-in security features help you meet corporate governance and compliance requirements.
+-   Workspaces (logical Grafana servers) allow for separation of data visualizations and querying.
+-   Pricing is based per active user in a workspace.
+-   AWS handles scaling, setup, and maintenance of all workspaces.
+-   Integrate it with several sources including Amazon CloudWatch, Amazon Managed Service for Prometheus, Amazon OpenSearch Service, and Amazon Timestream.
+
+### Use Cases :
+
+-   Connect to data sources like Prometheus for visualizing EKS, ECS, or your own Kubernetes cluster metrics.
+-   Vast data plugins make the service a perfect fit for monitoring loT and edge device data.
+-   Centralizing dashboards allows for more efficient operational issue troubleshooting.
+
+## Amazon Managed Service for Prometheus -
+
+![alt text](/Photos/image29.png)
+
+Serverless, Prometheus-compatible service used for securely monitoring container metrics at scale
+
+-   Leverage the open-source Prometheus data model with AWS-managed scaling and availability.
+-   Let AWS manage automatic scaling based on ingestion, storage,
+-   AWS replicates data across three
+    Availability Zones (AZs) in the same Region. Designed for availability.
+
+- Works with clusters running on Amazon
+EKS or self-managed Kubernetes clusters.
+- Leverage the open-source PromQL query language for exploring and extracting data.
+- Data is stored in workspaces for 150 days (automatically deleted afterward).
