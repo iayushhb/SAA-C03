@@ -1573,6 +1573,7 @@ You cannot do transitive peering for non-central VPCs. Non-central VPCs cannot g
 ![alt text](/Photos/image16.png)
 
 The following diagram highlights the above idea. VPC B is free to communicate with VPC A with VPC Peering enabled between both. However, VPC B cannot continue the conversation with VPC C. Only VPC A can communicate with VPC C.
+
 ![alt text](/Photos/image15.png)
 
 It is worth knowing what VPC peering configurations are not supported:
@@ -1623,6 +1624,8 @@ The following diagram illustrates a single VPN connection :
 ![alt text](/Photos/image17.png)
 
 The above VPC has an attached virtual private gateway (note: not an internet gateway) and there is a remote network that includes a customer gateway which you must configure to enable the VPN connection. You set up the routing so that any traffic from the VPC bound for your network is routed to the virtual private gateway.
+
+*VGW is a VPN concentrator on the AWS side of the VPN connection between two networks. It is part of a VPC and provides edge routing for AWS managed VPN connections and AWS Direct Connect connections.*
 
 **Summary: VPNs connect your on-prem with your VPC over the internet.**
 
