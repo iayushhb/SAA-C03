@@ -1981,7 +1981,7 @@ A launch template specifies all the needed settings that go into building out an
 
 It includes the AMI, EC2 instance size, security groups, and potentially networking information.
 
-*Baking your code into your AMIs will help reduce provisioning time.*
+_Baking your code into your AMIs will help reduce provisioning time._
 
 ![alt text](/Photos/image31.png)
 
@@ -2121,3 +2121,267 @@ Knowledge Check: How many WCUs for 1 write per second for an object that is 3 KB
 
 -   **Active/ Active Failover** :
     The most expensive disaster recovery strategy. You have two sites, both active and traffic split between the two. If one site fails, the other site takes the load. Generally, you have to have both sites at 200% normal capacity to avoid downtime.
+
+### Auto Scaling Cooldown Period:
+
+The cooldown period is a configurable setting for your Auto Scaling Group that helps to ensure that it doesn't launch or terminate additional instances before the previous scaling activity takes effect.
+
+After the Auto Scaling Group scales using a policy, it waits for the cooldown period to complete before resuming further scaling activities if needed.
+
+The default waiting period is 300 seconds, but this can be modified.
+
+---
+
+# Decoupling Workflows
+
+**Loose Coupling -**
+
+![alt text](/Photos/image42.png)
+
+**Tight Coupling -**
+
+![alt text](/Photos/image43.png)
+
+_Poll-based messaging is a request/response approach where a client sends a message to a server and waits for a response._
+
+---
+
+# Simple Queuing Service (SQS)
+
+SQS is a web-based service that gives you access to a message queue that can be used to store messages while waiting for another service to process them. It helps in the decoupling of systems and the horizontal scaling of AWS resources.
+
+Simple Queue Service is a messaging queue that allows asynchronous processing of work. One resource will write a message to an SQS queue, and then another resource will retrieve that message from SQS.
+
+The point behind SQS is to decouple work across systems. This way, downstream services in a system can perform work when they are ready to rather than when upstream services feed them data.
+
+> In a hypothetical AWS environment running without SQS, Application A would pass Application B data regardless if Application B was ready to receive the info. With SQS however, there is an intermediary step where the data is stored temporarily in a buffer. It waits there until Application B pulls the temporarily stored data. SQS is not a push-based service so it is necessary for SQS to work in tandem with another service that queries it for information.
+
+There are two types of SQS queues; standard and FIFO. Standard queues may be received out of order based on message size or however else the SQS queues decide to optimize. **FIFO queues** guarantees that the order of messages that went into the queue is the same as the order of messages that leave it.
+
+**Standard SQS queues** guarantee that a message is delivered at least once and because of this, it is possible on occasion that a message might be delivered more than once due to the asynchronous and highly distributed architecture. With standard queues, you have a nearly unlimited number of transactions per second.
+
+-   FIFO SQS queues guarantee exactly-once processing and is limited to 300 transactions per second.
+-   Messages in the queue can be kept there from one minute to 14 days and the default retention period is 4 days.
+
+-   An SQS queue can contain an unlimited number of messages.
+-   You cannot set a priority to the individual items in the SQS queue. If priority of messaging matters, create two separate SQS queues. The SQS queues for the priority message can be polled first by the EC2 Instances and once completed, the messages from the second queue can be processed next.
+
+### Amazon SQS visibility timeout
+
+Visibility timeouts in SQS are the mechanism in which messages marked for delivery from the queue are given a time frame to be fully received by a reader. This is done by temporarily making them invisible to other readers. If the message is not fully processed within the time limit, the message becomes visible again. This is another way in which messages can be duplicated. If you want to reduce the chance of duplication, increase the visibility timeout.
+
+The visibility timeout maximum is 12 hours.
+
+Always remember that the messages in the SQS queue will continue to exist even after the EC2 instance has processed it, until you delete that message. You have to ensure that you delete the message after processing to prevent the message from being received and processed again once the visibility timeout expires.
+
+![alt text](/Photos/image44.png)
+
+### SQS Polling:
+
+-   Polling is the means in which you query SQS for messages or work. Amazon SQS provides short-polling and long-polling to receive messages from a queue. By default, queues use short polling.
+-   **SQS long-polling** : This polling technique will only return from the queue once a message is there, regardless if the queue is currently full or empty. This way, the reader needs to wait either for the timeout set or for a message to finally arrive. SQS long polling doesn't return a response until a message arrives in the queue, reducing your overall cost over time.
+-   **SQS short-polling** : This polling technique will return immediately with either a message that’s already stored in the queue or empty-handed.
+-   The ReceiveMessageWaitTimeSeconds is the queue attribute that determines whether you are using Short or Long polling. By default, its value is zero which means it is using short-polling. If it is set to a value greater than zero, then it is long-polling.
+-   Every time you poll the queue, you incur a charge. So thoughtfully deciding on a polling strategy that fits your use case is important.
+
+### Dead-Letter Queues :
+
+-   Amazon SQS Dead-letter queues (DLQ) are targets for messages that cannot be processed successfully.
+-   Works with SQS and SNS!
+-   Useful for debugging applications and messaging systems.
+-   Ability to isolate unconsumed messages to troubleshoot.
+-   Redrive capability allows you to move the message back into the source queue!
+-   These are technically just other SQS queues!
+-   DLQs used with FIFO SQS queues must ALSO be FIFO queues.
+
+**Dead-Letter Queues Benefits** -
+
+-   Configure alarms based on message availability counts.
+-   Quickly identify which logs to investigate for exceptions.
+-   Analyze the SQS message contents for any errors.
+-   Troubleshoot consumer permissions.
+
+![alt text](/Photos/image45.png)
+
+---
+
+**What is push-based messaging?**
+
+Any messages sent by a producer that arrives at the SNS Topic will immediately be sent to all consumers.
+
+# Simple Notification Service (SNS)
+
+Simple Notification Service is a pushed-based messaging service that provides a highly scalable, flexible, and cost-effective method to publish a custom messages to subscribers who wish to be informed about a certain topic.
+
+-   This can be used to alert a system or a person.
+
+-   One message to many receivers!
+
+-   SNS is mainly used to send alarms or alerts.
+-   SNS provides topics for high-throughput, push-based, many-to-many messaging.
+-   Using Amazon SNS topics, your publisher systems can fan out messages to a large number of subscriber endpoints for parallel processing, including Amazon SQS queues, AWS Lambda functions, and HTTP/S webhooks. Additionally, SNS can be used to fan out notifications to end users using mobile push, SMS, and email.
+-   You can send these push notifications to Apple, Google, Fire OS, and Windows devices.
+-   SNS allows you to group multiple recipients using topics. A topic is an access point for allowing recipients to dynamically subscribe for identical copies of the same notification.
+-   One topic can support deliveries to multiple endpoint types. When you publish to a topic, SNS appropriately formats copies of that message to send to whichever kind of device.
+-   To prevent messages being lost, messages are stored redundantly across multiple AZs.
+-   There is no long or short polling involved with SNS due to the instantaneous pushing of messages
+-   SNS has flexible message delivery over multiple transport protocols and has a simple API.
+
+> -   Messages can be up to 256 KB of text in any format.
+> -   Messages that fail to be delivered can be stored in an SQS DLQ.
+> -   FIFO only supports SQS FIFO queues as a subscriber.
+> -   Messages are encrypted in transit by default, and you can add at-rest via AWS KMS.
+> -   A resource policy can be added to a topic, similar to S3. Useful for cross-account access.
+
+-   The SNS Extended Library allows for sending messages up to 2 GB in size.
+    The payload is stored in Amazon S3, then
+    SNS publishes a reference to the object.
+
+> -   **By default, every message published to a topic is sent to all subscribers**
+>
+> -   **Filter policies use JSON to define which messages get sent to specific subscribers**
+
+![alt text](/Photos/image46.png)
+
+---
+
+# API Gateway
+
+API Gateway is a fully managed service for developers that makes it easy to build, publish, manage, and secure entire APIs. With a few clicks in the AWS Management Console, you can create an API that acts as a “front door” for applications to access data, business logic, or functionality from your back-end services, such as workloads running on EC2, code running on AWS Lambda, or any web application.
+
+Amazon API Gateway handles all the tasks involved in accepting and processing up to hundreds of thousands of concurrent API calls, including traffic management, authorization and access control, monitoring, and API version management.
+
+Amazon API Gateway has no minimum fees or startup costs. You pay only for the API calls you receive and the amount of data transferred out.
+
+_API Gateway does the following for your APIs:_
+
+-   Exposes HTTP(S) endpoints for RESTful functionality
+-   Uses serverless functionality to connect to Lambda & DynamoDB
+-   Can send each API endpoint to a different target
+-   Runs cheaply and efficiently
+-   Scales readily and effortlessly
+-   Can throttle requests to prevent attacks
+-   Track and control usage via an API key
+-   Can be version controlled
+-   Can be connected to CloudWatch for monitoring and observability
+
+Since API Gateway can function with AWS Lambda, you can run your APIs and code without needing to maintain servers.
+
+Amazon API Gateway provides throttling at multiple levels including global and by a service call.
+
+-   In software, a throttling process, or a throttling controller as it is sometimes called, is a process responsible for regulating the rate at which application processing is conducted, either statically or dynamically.
+-   Throttling limits can be set for standard rates and bursts. For example, API owners can set a rate limit of 1,000 requests per second for a specific method in their REST APIs, and also configure Amazon API Gateway to handle a burst of 2,000 requests per second for a few seconds.
+-   Amazon API Gateway tracks the number of requests per second. Any requests over the limit will receive a 429 HTTP response. The client SDKs generated by Amazon API Gateway retry calls automatically when met with this response.
+
+You can add caching to API calls by provisioning an Amazon API Gateway cache and specifying its size in gigabytes. The cache is provisioned for a specific stage of your APIs. This improves performance and reduces the traffic sent to your back end. Cache settings allow you to control the way the cache key is built and the time-to-live (TTL) of the data stored for each method. Amazon API Gateway also exposes management APIs that help you invalidate the cache for each stage.
+
+You can enable API caching for improving latency and reducing I/O for your endpoint.
+
+When caching for a particular API stage (version controlled version), you cache responses for a particular TTL in seconds.
+
+API Gateway supports AWS Certificate Manager and can make use of free TLS/SSL certificates.
+
+With API Gateway, there are two kinds of API calls:
+
+-   Calls to the API Gateway API to create, modify, delete, or deploy REST APIs. These are logged in CloudTrail.
+-   API calls set up by the developers to deliver their custom functionality: These are not logged in CloudTrail.
+
+**API Options :**
+
+![alt text](/Photos/image47.png)
+
+_Endpoint Types :_
+
+-   Edge-Optimized : Default option. API requests get sent through a CloudFront edge location. Best for global users.
+-   Regional : Perfect for clients that reside in the same, specific region.
+    Ability to also leverage with CloudFront if required.
+-   Private : Only accessible via VPCs using interface VPC endpoints.
+
+# AWS Batch
+
+Batch computing run jobs asynchronously and automatically across multiple compute instances. While running a single job may be trivial, running many at scale, particularly with multiple dependencies, can be more challenging. This is where using a fully managed service such as AWS Batch offers significant benefit.
+
+_Solutions built on AWS Batch allow developers to build efficient, long-running compute jobs by focusing on the business logic required, while AWS manages the scheduling and provisioning of the work._
+
+As a fully managed service, AWS Batch helps you to run batch computing workloads of any scale. AWS Batch automatically provisions compute resources and optimizes the workload distribution based on the quantity and scale of the workloads. With AWS Batch, there's no need to install or manage batch computing software, so you can focus your time on analyzing results and solving problems.
+
+**Batch Components :**
+
+-   Jobs — the unit of work submitted to AWS Batch, whether it be implemented as a shell script, executable, or Docker container image.
+-   Job Definition — describes how your work is be executed, including the CPU and memory requirements and IAM role that provides access to other AWS services.
+-   Job Queues — listing of work to be completed by your Jobs. You can leverage multiple queues with different priority levels.
+-   Compute Environment — the compute resources that run your Jobs. Environments can be configured to be managed by AWS or on your own as well as the number of and type(s) of instances on which Jobs will run. You can also allow AWS to select the right instance type.
+
+**Fargate VS EC2** -
+
+![alt text](/Photos/image48.png)
+
+**AWS Batch VS AWS Lambda** -
+
+![alt text](/Photos/image49.png)
+
+**Managed vs Unmanaged Compute Environment :**
+
+![alt text](/Photos/image50.png)
+
+# Amazon MQ
+
+-   Amazon MQ is a managed message broker service that makes it easy to set up and operate message brokers in the cloud.
+-   The service is used when migrating services and apps into the cloud from your on-prem which is how it differs from Amazon SQS.
+-   Amazon MQ supports durability-optimized brokers backed by Amazon EFS to support high availability and message durability, and throughput-optimized brokers backed by Amazon EBS to support high-volume applications that require low latency and high throughput.
+-   You can easily move from any message broker to Amazon MQ because you don’t have to rewrite any messaging code in your applications.
+-   Amazon MQ is suitable for enterprise IT pros, developers, and architects who are managing a message broker themselves–whether on-premises or in the cloud–and want to move to a fully managed cloud service without rewriting the messaging code in their applications.
+-   Currently supports both Apache ActiveMQ or RabbitMQ engine types
+
+**Amazon MQ Brokers :**
+![alt text](/Photos/image51.png)
+
+# AWS Step Functions
+
+AWS Step Functions is a serverless orchestration service that lets you integrate with AWS Lambda functions and other AWS services to build business-critical applications. Through Step Functions' graphical console, you see your application’s workflow as a series of event-driven steps.
+
+Step Functions is based on state machines and tasks. In Step Functions, a workflow is called a state machine, which is a series of event-driven steps. Each step in a workflow is called a state. A Task state represents a unit of work that another AWS service, such as AWS Lambda, performs. A Task state can call any AWS service or API.
+
+With Step Functions' built-in controls, you examine the state of each step in your workflow to make sure that your application runs in order and as expected. Depending on your use case, you can have Step Functions call AWS services, such as Lambda, to perform tasks. You can create workflows that process and publish machine learning models. You can have Step Functions control AWS services, such as AWS Glue, to create extract, transform, and load (ETL) workflows. You also can create long-running, automated workflows for applications that require human interaction.
+
+> All state machines are written in the Amazon States Language format.
+
+**Execution Types -**
+
+![alt text](/Photos/image52.png)
+
+_Different States :_
+
+-   `Pass` : Passes any input directly to its output (no work done)
+-   `Task` : Single unit of work performed (e.g., Lambda, Batch, and SNS)
+-   `Choice` : Adds branching logic to state machines
+-   `Wait` : Creates a specified time delay within the state machine
+-   `Succeed` : Stops executions successfully
+-   `Fail` : Stops executions and marks them as failures
+-   `Parallel` : Runs parallel branches of executions within state machines
+-   `Map` : Runs a set of steps based on elements of an input array
+
+# Amazon AppFlow
+
+Amazon AppFlow is a fully-managed integration service that enables you to securely exchange data between software as a service (SaaS) applications, such as Salesforce, and AWS services, such as Amazon Simple Storage Service (Amazon S3) and Amazon Redshift. For example, you can ingest contact records from Salesforce to Amazon Redshift or pull support tickets from Zendesk to an Amazon S3 bucket.
+
+![alt text](/Photos/image53.png)
+
+**BENEFITS** -
+
+-   _Speed and agility_
+-   _Privacy and security_
+-   _Scalability_
+-   _Reliability_
+
+_AppFlow Use Cases_ -
+
+-   Transferring Salesforce records to Amazon Redshift
+-   Ingesting and analyzing Slack conversations in S3
+-   Migrating Zendesk and other help desk support tickets to Snowflake
+-   Transferring aggregate data on a scheduled basis to S3\*
+
+> \*Up to 100 GB per flow
+
+---
+# BIG DATA
