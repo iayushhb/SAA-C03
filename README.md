@@ -1625,7 +1625,7 @@ The following diagram illustrates a single VPN connection :
 
 The above VPC has an attached virtual private gateway (note: not an internet gateway) and there is a remote network that includes a customer gateway which you must configure to enable the VPN connection. You set up the routing so that any traffic from the VPC bound for your network is routed to the virtual private gateway.
 
-*VGW is a VPN concentrator on the AWS side of the VPN connection between two networks. It is part of a VPC and provides edge routing for AWS managed VPN connections and AWS Direct Connect connections.*
+_VGW is a VPN concentrator on the AWS side of the VPN connection between two networks. It is part of a VPC and provides edge routing for AWS managed VPN connections and AWS Direct Connect connections._
 
 **Summary: VPNs connect your on-prem with your VPC over the internet.**
 
@@ -1950,7 +1950,174 @@ Serverless, Prometheus-compatible service used for securely monitoring container
 -   AWS replicates data across three
     Availability Zones (AZs) in the same Region. Designed for availability.
 
-- Works with clusters running on Amazon
-EKS or self-managed Kubernetes clusters.
-- Leverage the open-source PromQL query language for exploring and extracting data.
-- Data is stored in workspaces for 150 days (automatically deleted afterward).
+-   Works with clusters running on Amazon
+    EKS or self-managed Kubernetes clusters.
+-   Leverage the open-source PromQL query language for exploring and extracting data.
+-   Data is stored in workspaces for 150 days (automatically deleted afterward).
+
+---
+
+# Scaling
+
+## What Is Horizontal Scaling?
+
+Horizontal scaling (aka scaling out) refers to adding additional nodes or machines to your infrastructure to cope with new demands. If you are hosting an application on a server and find that it no longer has the capacity or capabilities to handle traffic, adding a server may be your solution.
+
+![alt text](/Photos/image32.png)
+
+## What Is Vertical Scaling?
+
+Vertical scaling (aka scaling up) describes adding additional resources to a system so that it meets demand.
+
+While horizontal scaling refers to adding additional nodes, vertical scaling describes adding more power to your current machines. For instance, if your server requires more processing power, vertical scaling would mean upgrading the CPUs. You can also vertically scale the memory, storage, or network speed.
+
+![alt text](/Photos/image33.png)
+
+![alt text](/Photos/image30.png)
+
+## Launch Template :
+
+A launch template specifies all the needed settings that go into building out an EC2 instance. It is a collection of settings you can configure so you don't have to walk through the EC2 wizard over and over.
+
+It includes the AMI, EC2 instance size, security groups, and potentially networking information.
+
+*Baking your code into your AMIs will help reduce provisioning time.*
+
+![alt text](/Photos/image31.png)
+
+-   The most up-to-date and flexible way to create a template.
+-   The older version. It's not
+    "wrong" to use them, but, if possible, use templates.
+-   User data is included in the template or configuration.
+-   Can be versioned. Configurations are immutable.
+-   Configurations don't include networking information. Templates could.
+
+## Auto Scaling :
+
+AWS Auto Scaling lets you build scaling plans that automate how groups of different resources respond to changes in demand. You can optimize availability, costs, or a balance of both. AWS Auto Scaling automatically creates all of the scaling policies and sets targets for you based on your preference.
+
+> Auto Scaling is only for EC2. No other service can be scaled using Auto Scaling. Other services might have a built-in option, but they aren't included in Auto Scaling groups.
+
+When you use Elastic Load Balancing with your Auto Scaling group, it's not necessary to register individual EC2 instances with the load balancer. Instances that are launched by your Auto Scaling group are automatically registered with the load balancer. Likewise, instances that are terminated by your Auto Scaling group are automatically deregistered from the load balancer
+
+_Auto Scaling Steps :_
+![alt text](/Photos/image34.png)
+
+### Lifecylcle Hooks :
+
+As your Auto Scaling group scale-out or scale-in your EC2 instances, you may want to perform custom actions before they start accepting traffic or before they get terminated. Auto Scaling Lifecycle Hooks allow you to perform custom actions during these stages.
+
+For example, during the scale-out event of your ASG(Auto Scaling Group), you want to make sure that new EC2 instances download the latest code base from the repository and that your EC2 user data has completed before it starts accepting traffic. This way, the new instances will be fully ready and will quickly pass the load balancer health check when they are added as targets. Another example is this – during the scale-in event of you ASG, suppose your instances upload data logs to S3 every minute. You may want to pause the instance termination for a certain amount of time to allow the EC2 to upload all data logs before it gets completely terminated.
+
+![alt text](/Photos/image35.png)
+
+**STEPS :**
+
+1. EC2 instance gets launched by EC2 Auto Scaling group
+2. WAIT state is entered via the Lifecycle Hooks capability
+3. While in the WAIT state, the instance runs a custom script via EC2 user data to install a proprietary application
+4. Script install and configure application
+5. Once the application is validated to be working correctly, the instance sends a complete-lifecycle-action command
+
+### Auto Scaling Policies :
+
+1. **Step Scaling** : To use step scaling, you first create a CloudWatch alarm that monitors a metric for your Auto Scaling group. Define the metric, threshold value, and number of evaluation periods that determine an alarm breach. Then, create a step scaling policy that defines how to scale your group when the alarm threshold is breached.
+
+![alt text](/Photos/image36.png)
+
+![alt text](/Photos/image37.png)
+
+2. **Simple Scaling** : Simple scaling relies on a metric as a basis for scaling. For example, you can set a CloudWatch alarm to have a CPU Utilization threshold of 80%, and then set the scaling policy to add 20% more capacity to your Auto Scaling group by launching new instances. Accordingly, you can also set a CloudWatch alarm to have a CPU utilization threshold of 30%. When the threshold is met, the Auto Scaling group will remove 20% of its capacity by terminating EC2 instances.
+
+3. **Target Tracking** : Target tracking policy lets you specify a scaling metric and metric value that your auto scaling group should maintain at all times. Let’s say for example your scaling metric is the average CPU utilization of your EC2 auto scaling instances, and that their average should always be 80%. When CloudWatch detects that the average CPU utilization is beyond 80%, it will trigger your target tracking policy to scale out the auto scaling group to meet this target utilization. Once everything is settled and the average CPU utilization has gone below 80%, another scale in action will kick in and reduce the number of auto scaling instances in your auto scaling group. With target tracking policies, your auto scaling group will always be running in a capacity that is defined by your scaling metric and metric value.
+
+**Instance Warm-Up and Cooldown** -
+
+-   _Warm-Up_ :
+    Stops instances from being placed behind the load balancer, failing the health check, and being terminated prematurely.
+-   _Cooldown_ :
+    Pauses Auto Scaling for a set amount of time.
+    Helps to avoid runaway scaling events.
+-   _Avoid Thrashing_ :
+    You want to create instances quickly and spin them down slowly.
+
+_Scaling Types :-_
+
+![alt text](/Photos/image38.png)
+
+## Scaling Non-Relational Databases
+
+_Types of Scaling -_
+
+There are 4 types of scaling we can use to adjust our relational database performance.
+
+![alt text](/Photos/image39.png)
+
+_Scaling Options -_
+Scaling is simplified when using DynamoDB, as AWS does all the heavy lifting for you.
+
+![alt text](/Photos/image40.png)
+
+**Capacity Units :**
+
+### Read Capacity Unit (RCU)
+
+DynamoDB unit of measurement for reads per second for an item up to 4 KB in size.
+
+One strongly consistent read per second.
+
+Two eventually consistent reads per second.
+
+_Knowledge Check: How many RCUs for 1 strongly consistent read per second for objects that are 7 KB in size?_
+
+1 RCU = 4 KB / 1 Strongly Consistent Read.
+
+Round up to the next nearest amount for the item size = 8 KB / 4 KB = 2 RCU
+
+### Write Capacity Unit (WCU)
+
+DynamoDB unit of measurement for writes per second for an item up to 1 KB in size.
+
+Knowledge Check: How many WCUs for 1 write per second for an object that is 3 KB in size?
+
+1 WCU = 1 KB \* 1 Write per Second
+
+3 KB \* 1 WCU = 3 WCUs
+
+**Non-Relational Database Scaling** -
+
+-   Access Patterns :
+    Know if your access patterns are predicable or unpredictable.
+-   Design Matters :
+    Avoiding hot keys will also lead to better performance.
+
+-   Switching :
+    You can switch, but only twice per 24 hours per table.
+
+-   Cost :
+    Keep cost in mind when considering which type of table to pick.
+
+## Different Disaster Recovery Strategies
+
+-   **Recovery Point Objective (RPO)** :
+    In the event of a disaster/failure, at what point in time do you want your data recovered to? Put simply, how much data can you afford to lose?
+    Twenty-four hours? Twelve hours?
+    Minutes? Seconds?
+
+    Typically speaking, the lower the time, the greater the cost.
+
+-   **Recovery Time Objective (RTO)** :
+    In the event of a failure, how fast do you want to fail over? How much time can the business afford? The lower the time, the more expensive the cost.
+
+-   **Backup and Restore** :
+    The simplest disaster recovery strategy. If something happens to your production system, restore that system from backup.
+
+-   **Pilot Light** :
+    A pilot light in a home hot water system is where a small light burns so that when you want to turn the hot water system on, it starts straight away. When a pilot light is burning, it is not consuming the same level of gas as when the system is on.
+    ![alt text](/Photos/image41.png)
+
+-   **Warm Standby** :
+    Where you have a scaled-down version of your production system already running in another Availability Zone/Region. You then scale this system up in the event of an outage.
+
+-   **Active/ Active Failover** :
+    The most expensive disaster recovery strategy. You have two sites, both active and traffic split between the two. If one site fails, the other site takes the load. Generally, you have to have both sites at 200% normal capacity to avoid downtime.
