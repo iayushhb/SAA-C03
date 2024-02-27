@@ -8,7 +8,19 @@
 -   [`DATABASES`](#databases)
 -   [`VPC NETWORKING`](#virtual-private-cloud-vpc-networking)
 -   [`ROUTE 53`](#route53)
--   [`Elastic Load Balancers`](#elastic-load-balancers-elb)
+-   [`ELASTIC LOAD BALANCERS`](#elastic-load-balancers-elb)
+-   [`SCALING`](#scaling)
+-   [`AUTO-SCALING`](#auto-scaling)
+-   [`DECOUPLING WORKFLOWS`](#decoupling-workflows)
+-   [`SIMPLE QUEUING SERVICE`](#simple-queuing-service-sqs)
+-   [`SIMPLE NOTIFICATION SERVICE`](#simple-notification-service-sns)
+-   [`API GATEWAY`](#api-gateway)
+-   [`AWS BATCH`](#aws-batch)
+-   [`AMAZON MQ`](#amazon-mq)
+-   [`AWS STEP FUNCTIONS`](#aws-step-functions)
+-   [`AMAZON APPFLOW`](#amazon-appflow)
+- [`BIG DATA`](#big-data)
+
 
 ---
 
@@ -1992,7 +2004,9 @@ _Baking your code into your AMIs will help reduce provisioning time._
 -   Can be versioned. Configurations are immutable.
 -   Configurations don't include networking information. Templates could.
 
-## Auto Scaling :
+---
+
+# Auto Scaling :
 
 AWS Auto Scaling lets you build scaling plans that automate how groups of different resources respond to changes in demand. You can optimize availability, costs, or a balance of both. AWS Auto Scaling automatically creates all of the scaling policies and sets targets for you based on your preference.
 
@@ -2383,5 +2397,216 @@ _AppFlow Use Cases_ -
 
 > \*Up to 100 GB per flow
 
----
 # BIG DATA
+
+3 Vs that differentiate big data from traditional data -
+
+-   Volume : Ranges from terabytes to petabytes of data.
+-   Variety : Includes data from a wide range of sources and formats.
+-   Velocity : Data needs to be collected, stored, processed, and analyzed within a short period of time.
+
+---
+
+# Amazon Redshift
+
+Amazon Redshift is a fully managed, petabyte-scale data warehouse service in the cloud. The Amazon Redshift service manages all of the work of setting up, operating, and scaling a data warehouse. These tasks include provisioning capacity, monitoring and backing up the cluster, and applying patches and upgrades to the Amazon Redshift engine.
+
+-   Redshift is incredibly big — it can hold up to 16 PB of data. You don't have to split up your large datasets!
+
+-   This database is relational. You use your standard SQL and business intelligence (BI) tools to interact with it.
+
+-   This is based on the PostgreSQL database engine type; however, it is NOT used for OLTP workloads!
+
+-   Redshift is not meant to be a replacement for standard RDS databases.
+
+-   Offers up to 10x the performance of other data warehouses offered in the cloud!
+
+-   Storage of data is column-based instead of row-based. Allows for efficient parallel queries.
+
+-   Redshift now supports Multi-AZ deployments! It only spans two AZs at this time.
+
+-   Snapshots are incremental and point-in-time. They can be automated or manual.
+    Always contained in Amazon S3 (you cannot manage the bucket).
+-   No conversions from Single-AZ to Multi-AZ (or vice versa)!
+
+Redshift is used for business intelligence and pulls in very large and complex datasets to perform complex queries in order to gather insights from the data.
+It fits the use case of Online Analytical Processing (OLAP). Redshift is a powerful technology for data discovery including capabilities for almost limitless report viewing, complex analytical calculations, and predictive “what if” scenario (budget, forecast, etc.) planning.
+
+Redshift can also asynchronously replicate your snapshots to a different region if desired.
+
+Redshift is encrypted in transit using SSL and is encrypted at rest using AES-256. By default, Redshift will manage all keys, but you can do so too via AWS CloudHSM or AWS KMS.
+
+Redshift is billed for:
+
+-   Compute Node Hours (total hours your non-leader nodes spent querying for data)
+-   Backups
+-   Data transfer within a VPC (but not outside of it)
+
+### Redshift Spectrum -
+
+-   Efficiently query and retrieve data from Amazon S3 without having to load the data into Amazon
+    Redshift tables.
+
+-   Massive parallelism allows this to run very fast against large datasets. Uses Redshift servers that are independent of your cluster!
+
+-   The cluster and the data files in Amazon S3 must be in the same AWS Region.
+-   External S3 tables are read-only. You can't perform insert, update, or delete operations on external tables.
+
+### Enhanced VPC Routing -
+
+-   When you use Amazon Redshift Enhanced VPC Routing, Redshift forces all traffic (such as COPY and UNLOAD traffic) between your cluster and your data repositories through your Amazon VPC.
+-   If Enhanced VPC Routing is not enabled, Amazon Redshift routes traffic through the Internet, including traffic to other services within the AWS network.
+-   By using Enhanced VPC Routing, you can use standard VPC features, such as VPC security groups, network access control lists (ACLs), VPC endpoints, VPC endpoint policies, internet gateways, and Domain Name System (DNS) servers.
+
+## ETL
+
+ETL stands for Extract, Transform, Load. It's a process used in data warehousing and data integration to gather data from various sources, transform it into a consistent format, and load it into a target database or data warehouse.
+
+ETL processes are crucial in ensuring that data is effectively collected, integrated, and made available for analysis and decision-making purposes within organizations. They help maintain data quality, consistency, and integrity across disparate data sources.
+
+# EMR
+
+Amazon EMR (previously called Amazon Elastic MapReduce) is a managed cluster platform that simplifies running big data frameworks, such as Apache Hadoop and Apache Spark, on AWS to process and analyze vast amounts of data. Using these frameworks and related open-source projects, you can process data for analytics purposes and business intelligence workloads. Amazon EMR also lets you transform and move large amounts of data into and out of other AWS data stores and databases, such as Amazon Simple Storage Service (Amazon S3) and Amazon DynamoDB.
+
+**EMR Storage** -
+
+-   Hadoop Distributed File System (HDFS) :
+    Distributed, scalable file system for Hadoop that distributes stored data across instances. Used for caching results during processing.
+
+-   EMR File System (EMRFS) :
+    Extends Hadoop to add the ability to directly access data stored in Amazon S3 as if it were a part of HDFS. S3 is typically used to store input and output data, not intermediate data.
+-   Local file system :
+    Locally connected disk created with each EC2 instance. Instance store volumes only remain during the lifecycle of the Amazon EC2 instance.
+
+_Amazon EMR Clusters and Nodes :_
+Clusters are groups of EC2 instances within Amazon EMR. Each instance is a node.
+
+Primary Node :
+Manages the cluster, coordinates distribution of data and tasks, tracks health statuses.
+
+Core Node :
+Runs tasks and stores data in Hadoop Distributed File System (HDFS). Long-running!
+
+Task Node :
+ONLY runs tasks, with no storage of data within HDFS. Optional. Typically Spot instances.
+
+_Purchasing Options and Cluster Types :_
+
+-   On-Demand :
+    Most reliable purchase option. Will not be terminated. Most expensive choice.
+
+-   Reserved : Just like other reserved instances.
+    Minimum of 1 year. Offers great cost savings. Typically used for primary nodes and core nodes.
+-   Spot :
+    Cheapest option available. Can be terminated with little warning. Typically used for task nodes.
+-   Long-Running or Temporary :
+    Clusters can be either long-running, or they can be transient (a.k.a. temporary).
+
+![alt text](/Photos/image55.png)
+
+> Toolsets to Keep in Mind -
+>
+> Built-in support for Spark, Hive, HBase, Flink, Hudi, and Presto.
+
+---
+
+# Kinesis
+
+Amazon Kinesis makes it easy to collect, process, and analyze real-time, streaming data so you can get timely insights and react quickly to new information. With Amazon Kinesis, you can ingest real-time data such as video, audio, application logs, website clickstreams, and IoT telemetry data for machine learning, analytics, and other applications. Amazon Kinesis enables you to process and analyze data as it arrives and respond instantly instead of having to wait until all your data is collected before the processing can begin.
+
+Amazon Kinesis makes it easy to load and analyze the large volumes of data entering AWS.
+
+Kinesis is used for processing real-time data streams (data that is generated continuously) from devices constantly sending data into AWS so that said data can be collected and analyzed.
+
+It is a fully managed service that automatically scales to match the throughput of your data and requires no ongoing administration. It can also batch, compress, and encrypt the data before loading it, minimizing the amount of storage used at the destination and increasing security.
+
+_There are three different types of Kinesis:_
+
+-   **Kinesis Streams** - Kinesis Streams works where the data producers stream their data into Kinesis Streams which can retain the data from one day up until 7 days. Once inside Kinesis Streams, the data is contained within shards.
+    Kinesis Streams can continuously capture and store terabytes of data per hour from hundreds of thousands of sources such as website clickstreams, financial transactions, social media feeds, IT logs, and location-tracking events. For example: purchase requests from a large online store like Amazon, stock prices, Netflix content, Twitch content, online gaming data, Uber positioning and directions, etc.
+
+![alt text](/Photos/image56.png)
+
+-   **Kinesis Firehose** : Amazon Kinesis Firehose is the easiest way to load streaming data into data stores and analytics tools. When data is streamed into Kinesis Firehose, there is no persistent storage there to hold onto it. The data has to be analyzed as it comes in so it's optional to have Lambda functions inside your Kinesis Firehose. Once processed, you send the data elsewhere.
+    Kinesis Firehose can capture, transform, and load streaming data into Amazon S3, Amazon Redshift, Amazon Elasticsearch Service, and Splunk, enabling near real-time analytics with existing business intelligence tools and dashboards you’re already using today.
+
+    > Kinesis Firehose is auto scalable.
+
+![alt text](/Photos/image57.png)
+
+-   **Kinesis Analytics** : Kinesis Analytics works with both Kinesis Streams and Kinesis Firehose and can analyze data on the fly. The data within Kinesis Analytics also gets sent elsewhere once it is finished processing. It analyzes your data inside of the Kinesis service itself. The data can even be transformed.
+
+> **Kinesis vs. SQS**
+>
+> ![alt text](/Photos/image58.png)
+
+---
+
+# Amazon Athena
+
+AWS Athena is an interactive query service that makes it easy to analyze data directly in Amazon Simple Storage Service (Amazon S3) using standard SQL. It's a serverless service, meaning there's no infrastructure to manage, and you only pay for the queries you run.
+
+# Amazon Glue
+
+AWS Glue is a serverless data integration service that makes it easy for analytics users to discover, prepare, move, and integrate data from multiple sources. You can use it for analytics, machine learning, and application development. It also includes additional productivity and data ops tooling for authoring, running jobs, and implementing business workflows.
+
+With AWS Glue, you can discover and connect to more than 70 diverse data sources and manage your data in a centralized data catalog. You can visually create, run, and monitor extract, transform, and load (ETL) pipelines to load data into your data lakes.
+
+---
+
+# Amazon QuickSight
+
+Amazon QuickSight is a cloud-scale business intelligence (BI) service that you can use to deliver easy-to-understand insights to the people who you work with, wherever they are. Amazon QuickSight connects to your data in the cloud and combines data from many different sources. In a single data dashboard, QuickSight can include AWS data, third-party data, big data, spreadsheet data, SaaS data, B2B data, and more.
+
+-   Users can be created for accessing
+    QuickSight
+-   Enterprise version allows you to also create groups
+-   Users and groups only exist in QuickSight
+-   Dashboards allow for stored configurations and filtering
+-   You can share dashboards and analysis results with users and groups
+
+---
+
+# AWS Data Pipeline
+
+AWS CodePipeline is a continuous delivery service you can use to model, visualize, and automate the steps required to release your software. You can quickly model and configure the different stages of a software release process. CodePipeline automates the steps required to release your software changes continuously.
+
+# Amazon MSK
+
+Amazon Managed Streaming for Apache Kafka (Amazon MSK) is a fully managed service that enables you to build and run applications that use Apache Kafka to process streaming data. Amazon MSK provides the control-plane operations, such as those for creating, updating, and deleting clusters. It lets you use Apache Kafka data-plane operations, such as those for producing and consuming data. It runs open-source versions of Apache Kafka. This means existing applications, tooling, and plugins from partners and the Apache Kafka community are supported without requiring changes to application code.
+
+-   Broker nodes — When creating an Amazon MSK cluster, you specify how many broker nodes you want Amazon MSK to create in each Availability Zone. In the example cluster shown in this diagram, there's one broker per Availability Zone. Each Availability Zone has its own virtual private cloud (VPC) subnet.
+
+-   ZooKeeper nodes — Amazon MSK also creates the Apache ZooKeeper nodes for you. Apache ZooKeeper is an open-source server that enables highly reliable distributed coordination.
+
+-   Producers, consumers, and topic creators — Amazon MSK lets you use Apache Kafka data-plane operations to create topics and to produce and consume data.
+
+-   Cluster Operations You can use the AWS Management Console, the AWS Command Line Interface (AWS CLI), or the APIs in the SDK to perform control-plane operations. For example, you can create or delete an Amazon MSK cluster, list all the clusters in an account, view the properties of a cluster, and update the number and type of brokers in a cluster.
+
+Amazon MSK detects and automatically recovers from the most common failure scenarios for clusters so that your producer and consumer applications can continue their write and read operations with minimal impact. When Amazon MSK detects a broker failure, it mitigates the failure or replaces the unhealthy or unreachable broker with a new one. In addition, where possible, it reuses the storage from the older broker to reduce the data that Apache Kafka needs to replicate. Your availability impact is limited to the time required for Amazon MSK to complete the detection and recovery. After a recovery, your producer and consumer apps can continue to communicate with the same broker IP addresses that they used before the failure.
+
+#### Resiliency in Amazon MSK :
+
+-   Automatic detection and recovery from common failure scenarios. Minimal impact!
+-   Detected broker failures result in mitigation or replacement of unhealthy nodes.
+-   Tries to reuse storage from older brokers during failures to reduce data needing replication.
+-   Impact time is limited to however long it takes Amazon MSK to complete detection and recovery.
+-   After successful recovery, producers and consumer apps continue to communicate with the same broker IP as before.
+
+![alt text](/Photos/image59.png)
+
+### Security and Logging -
+
+-   Integration with Amazon KMS for SSE requirements
+-   Encryption at rest by default
+-   TLS 1.2 for encryption in transit between brokers in clusters
+-   Deliver broker logs to Amazon CloudWatch, Amazon S3, and Amazon Kinesis Data Firehose
+-   Metrics are gathered and sent to CloudWatch
+-   All Amazon MSK API calls are logged to AWS Cloud Trail
+
+# Amazon OpenSearch
+
+OpenSearch is a managed service allowing you to run search and analytics engines for
+various use cases.
+It is the successor to Amazon
+Elasticsearch Service.
