@@ -28,7 +28,8 @@
 -   [`AMAZON QUICKSIGHT`](#amazon-quicksight)
 -   [`AWS DATA PIPELINE`](#aws-data-pipeline)
 -   [`AMAZON MSK`](#amazon-msk)
-- [`AMAZON OPENSEARCH`](#amazon-opensearch)
+-   [`AMAZON OPENSEARCH`](#amazon-opensearch)
+
 ---
 
 # AWS Well-Architected Framework
@@ -2559,6 +2560,8 @@ AWS Glue is a serverless data integration service that makes it easy for analyti
 
 With AWS Glue, you can discover and connect to more than 70 diverse data sources and manage your data in a centralized data catalog. You can visually create, run, and monitor extract, transform, and load (ETL) pipelines to load data into your data lakes.
 
+You can specify the number of DPUs for an ETL job. A Glue ETL job must have a minimum of 2 DPUs. AWS Glue allocates 10 DPUs to each ETL job by default.
+
 ---
 
 # Amazon QuickSight
@@ -2617,3 +2620,42 @@ OpenSearch is a managed service allowing you to run search and analytics engines
 various use cases.
 It is the successor to Amazon
 Elasticsearch Service.
+
+OpenSearch is a distributed, community-driven, Apache 2.0-licensed, 100% open-source search and analytics suite used for a broad set of use cases like real-time application monitoring, log analytics, and website search. OpenSearch provides a highly scalable system for providing fast access and response to large volumes of data with an integrated visualization tool, OpenSearch Dashboards, that makes it easy for users to explore their data. OpenSearch is powered by the Apache Lucene search library, and it supports a number of search and analytics capabilities such as k-nearest neighbors (KNN) search, SQL, Anomaly Detection, Machine Learning Commons, Trace Analytics, full-text search, and more.
+
+# SERVERLESS
+
+# AWS Lambda
+
+AWS Lambda lets you run code without provisioning or managing servers. You pay only for the compute time you consume. With Lambda, you can run code for virtually any type of application or backend service - all with zero administration. You upload your code and Lambda takes care of everything required to run and scale your code with high availability. You can set up your code to be automatically triggered from other AWS services or be called directly from any web or mobile app.
+
+### Lambda Features -
+
+-   Free tier of 1,000,000 requests and 400,000 GBs of compute per month. After that, pay per request.
+-   Integrates with numerous AWS services, including S3, DynamoDB, EventBridge, SQS/SNS, and Kinesis.
+-   Logging and monitoring can be easily accomplished using Amazon CloudWatch!
+-   Easily set memory requirements as needed. Currently able to use up to 10,240 MB! CPU scales with memory.
+-   Used for short-term executions. Time limit of 900 seconds (15 minutes). For anything longer, use ECS, Batch, or EC2!
+-   Leverage industry-dominant languages including Python, Golang, Java, Node.js, and others!
+
+### Lambda Configuration -
+
+-   Runtime : You'll need to pick from an available runtime or bring your own. This is the environment your code will run in.
+-   Permissions : If your Lambda function needs to make an AWS API call, you'll need to attach a role.
+-   Networking: Optionally define the VPC, subnet, and security groups your functions are a part of.
+-   Resources: Define the amount of available memory allocated to your function.
+-   Trigger: What's going to alert your Lambda function to start? Defining a trigger will kick Lambda off if that event occurs.
+
+### Lambda Function Quotas -
+
+![alt text](/Photos/image60.png)
+
+
+## AWS Serverless Application Repository
+
+The AWS Serverless Application Repository is a managed repository for deploying and publishing serverless applications.
+
+You can also use pre-built applications instead of cloning, building, packaging, and publishing source code to AWS before deploying it.
+
+Each application includes an AWS SAM(Serverless Application Model) template that specifies the AWS resources that will be used.
+
