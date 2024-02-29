@@ -2650,7 +2650,6 @@ AWS Lambda lets you run code without provisioning or managing servers. You pay o
 
 ![alt text](/Photos/image60.png)
 
-
 ## AWS Serverless Application Repository
 
 The AWS Serverless Application Repository is a managed repository for deploying and publishing serverless applications.
@@ -2659,3 +2658,718 @@ You can also use pre-built applications instead of cloning, building, packaging,
 
 Each application includes an AWS SAM(Serverless Application Model) template that specifies the AWS resources that will be used.
 
+## Containerization
+
+A container is a standard unit of software that packages up code and all its dependencies, so the application runs quickly and reliably from one computing environment to another.
+
+![alt text](/Photos/image61.png)
+
+-   A hypervisor is what allows one machine to run multiple virtual machines. It's what allocates and controls the sharing of a machine's hardware.
+-   The container engine is what unpacks the container files and hands them off to the operating system kernel.
+
+-   Dockerfile :
+    Text document that contains all the commands or instructions that will be used to build an image.
+-   Image :
+    Immutable file that contains the code, libraries, dependencies, and configuration files needed to run an application.
+-   Registry :
+    Stores Docker images for distribution.
+    They can be both private and public.
+-   Container :
+    A running copy of the image that has been created.
+
+## Amazon ECS
+
+![alt text](/Photos/image62.png)
+
+Amazon Elastic Container Service is a service that allows you to easily launch and manage Docker containers running on AWS compute.
+
+-   ECS can manage anywhere from one to thousands of containers
+-   ECS will appropriately place the containers and keep them online
+-   Containers are appropriately registered with chosen load balancers as they come online and go offline
+-   Containers can have individual roles attached to them, making security a breeze
+-   Extremely easy to set up and scale to
+    handle any workload
+
+### ECS VS EKS
+
+![alt text](/Photos/image63.png)
+
+## AWS Fargate
+
+AWS Fargate is a serverless compute engine for containers.
+
+The Fargate launch type allows you to run your containerized applications without the need to provision and manage the backend infrastructure. Just register your task definition and Fargate launches the container for you.
+
+-   It works with both Amazon Elastic Container Service (ECS) and Amazon Elastic Kubernetes Service (EKS).
+
+Fargate makes it easy for you to focus on building your applications. It removes the need to provision and manage servers, lets you specify and pay for resources per application, and improves security through application isolation by design.
+
+-   Can now use both Linux and Windows containers!
+
+**ECS Launch Types :**
+
+![alt text](/Photos/image64.png)
+
+_Fargate VS Lambda :_
+
+Fargate -
+
+-   Select Fargate when you have more consistent workloads.
+
+-   Allows Docker use across the organization and a greater level of control by developers.
+
+Lambda -
+
+-   Great for unpredictable or inconsistent workloads.
+
+-   Perfect for applications that can be expressed as a single function.
+
+## Amazon EventBridge
+
+Amazon EventBridge (formerly CloudWatch
+Events) is a serverless event bus.
+It allows you to pass events from a source to an endpoint. Essentially, it's the glue that holds your serverless application together.
+
+### EventBridge Concepts -
+
+-   Events: A recorded change in an AWS environment, SaaS partner, or one of your own configured applications/services. This also includes scheduled events.
+-   Rules: Criteria used to match incoming events and send them to the appropriate targets. Based on either event patterns or schedules.
+-   Event Bus: A router that receives events and delivers them to targets (destinations). Every account has a default bus, and you can create other custom buses.
+
+**Rule Triggers** :
+
+-   Event Pattern :
+    Define an event source and event pattern that will trigger your rule.
+
+        Example: EC2 terminated
+
+-   Set up a recurring schedule for triggering your rule.
+
+    Rate-based: rate(1 hour)
+
+    Cron-based: cron(0 12\* _ ? _)
+
+![alt text](/Photos/image65.png)
+
+**Integrations** -
+
+-   You are able to leverage ECR images within your own container infrastructure.
+-   Use container images in ECS container definitions.
+-   Pull images for your EKS clusters.
+-   Amazon Linux containers can be used locally for your software development.
+
+## Amazon Elastic Container Registry (ECR)
+
+Amazon Elastic Container Registry (Amazon ECR) is an AWS managed container image registry service that is secure, scalable, and reliable. Amazon ECR supports private repositories with resource-based permissions using AWS IAM. This is so that specified users or Amazon EC2 instances can access your container repositories and images.
+
+### Components of Amazon ECR
+
+-   Registry :
+    An Amazon ECR private registry is provided to each AWS account; you can create one or more repositories in your registry and store Docker images, Open Container Initiative (OCI) images, and OCI compatible artifacts in them.
+
+-   Authorization token :
+    Your client must authenticate to an Amazon ECR private registry as an AWS user before it can push and pull images.
+
+-   Repository :
+    An Amazon ECR repository contains your Docker images, Open Container Initiative (OCI) images, and OCI compatible artifacts.
+
+-   Repository policy :
+    You can control access to your repositories and the contents within them with repository policies.
+
+-   Image :
+    You can push and pull container images to your repositories. You can use these images locally on your development system, or you can use them in Amazon ECS task definitions and Amazon EKS pod specifications.
+
+### Features of Amazon ECR -
+
+-   Lifecycle policies help with managing the lifecycle of the images in your repositories. You define rules that result in the cleaning up of unused images. You can test rules before applying them to your repository.
+-   Image scanning helps in identifying software vulnerabilities in your container images. Each repository can be configured to scan on push. This ensures that each new image pushed to the repository is scanned. You can then retrieve the results of the image scan.
+
+-   Cross-Region and cross-account replication makes it easier for you to have your images where you need them. This is configured as a registry setting and is on a per-Region basis.
+
+-   Pull through cache rules provide a way to cache repositories in an upstream registry in your private Amazon ECR registry. Using a pull through cache rule, Amazon ECR will periodically reach out to the upstream registry to ensure the cached image in your Amazon ECR private registry is up to date.
+
+## Amazon EKS Distro
+
+Amazon EKS Distro (EKS-D) is a Kubernetes distribution based on and used by Amazon EKS.
+
+-   It has the same versions and dependencies deployed by Amazon EKS.
+-   EKS-D is fully managed by you unlike Amazon EKS, which is managed by AWS.
+-   Run EKS-D anywhere - on-premises, in the cloud, or somewhere else!
+-   You are fully responsible for upgrading and managing your platforms.
+
+## EKS Anywnere
+
+-   An on-premises way to
+    manage Kubernetes (K8s) clusters with the same practices used for Amazon EKS.
+-   Allows for deployment, usage, and management methods for clusters in data centers
+-   Offers full lifecycle management of multiple K8s clusters Operates independently of AWS - K8s control plane management is operated completely by the customer. - K8s control plane location is entirely within a customer data center or operations center. - Cluster updates are done entirely via manual CLI or Flux. - Curated packages offer extended core functionalities of K8s clusters. - Curated packages require an
+    Enterprise subscription.
+
+## ECS Anywhere
+
+-   Feature of Amazon ECS allowing the management of container-based apps on-premises
+-   No need to install and operate local container orchestration software, meaning more operational efficiency
+-   Completely managed solution enabling standardization of container management across environments
+-   Keep in mind, no ELB support makes inbound traffic requirements less efficient
+-   New launch type noted as
+    EXTERNAL for creating services or running tasks
+
+### ECS Anywhere Requirements -
+
+-   You must have the SSM Agent, ECS agent, and Docker installed.
+-   You must first register external instances as SSM Managed Instances.
+-   Easily create an installation script within the ECS console.
+-   Scripts contain SSM activation keys and commands for required software.
+-   Execute scripts on your on-premises VMs or bare-metal servers.
+-   Deploy containers using the EXTERNAL launch type.
+
+![alt text](/Photos/image66.png)
+
+## Amazon Aurora Serverless
+
+-   On-demand and Auto Scaling configuration for the Amazon Aurora database service
+-   Automation of monitoring workloads and adjusting capacity for databases
+-   Capacity adjusted based on application demands
+-   Charged only for resources consumed by DB clusters; per-second billing
+-   Helps customers stay well within budgets via the Auto Scaling and per-second billing features
+
+    -   Aurora Capacity Units (ACUs): Measurements on how your clusters scale
+
+    -   Set a minimum and maximum of ACUs for scaling requirements — can be zero
+
+    -   Allocated (quickly) by AWS-managed warm pools
+
+    -   Combination of about 2 GiB of memory, matching CPU, and networking capability
+
+    -   Same data resiliency as Aurora provisioned: six copies of data across three AZs
+
+    -   Multi-AZ deployments for establishing highly available clusters
+
+**Popular Use Cases** -
+
+-   Easily swap from
+    provisioned to serverless or
+    vice versa.
+-   App might serve more than one purpose with different
+    traffic spikes.
+-   Development or testing of
+    new features.
+-   Unpredictable or sudden activity.
+-   Let the service manage database capacity for each individual app.
+-   Unsure what database instance needs are required.
+
+## AWS X-RAY
+
+Collects
+application data for viewing, filtering, and gaining insights about requests and responses
+
+View calls to
+downstream AWS
+resources and other microservices/ APIs or databases
+
+Receives traces from your applications for allowing insights
+
+Integrated
+services can add tracing headers, send trace data, or run the X-Ray daemon
+
+-   Segments: Data containing resource names, request details, and other information
+
+-   Subsegments: Segments providing more granular timing information and details
+
+-   Service graph: Graphical representation of interacting services in requests
+
+-   Traces: Trace ID tracks paths of requests and traces collect all segments in a request
+
+-   Tracing header: Extra HTTP header containing sampling decisions and trace ID
+
+-   Tracing header containing added information is named X-Amzn-Trace-Id
+
+**AWS X-Ray Daemon** -
+
+AWS software application that listens on UDP port 2000. It collects raw segment data and sends it to the AWS X-Ray API.
+
+When the daemon is running, it works along with the AWS X-Ray SDKs.
+
+## AWS AppSync
+
+Robust, scalable GraphQL interface for application developers
+
+Combines data from multiple sources (e.g., Amazon DynamoDB and AWS Lambda)
+
+Enables data interaction for developers via GraphQL
+
+GraphQL: Data language that enables apps to fetch data from servers
+
+Seamless integration with React, React Native, iOS, and Android
+
+# Security
+
+## DDoS Attack
+
+A Distributed Denial of Service (DDoS) attack is an attack that attempts to make your website or application unavailable to your end users.
+
+This can be achieved by multiple mechanisms, such as large packet floods, by using a combination of reflection and amplification techniques, or by using large botnets.
+
+### Layer 4 DDoS Attack -
+
+A Layer 4 DDoS attack is often referred to as a SYN flood. It works at the transport layer (TCP).
+
+To establish a TCP connection a 3-way handshake takes place. The client sends a SYN packet to a server, the server replies with a SYN-ACK, and the client then responds to that with an ACK.
+
+After the "3-way handshake" is complete, the TCP connection is established. After this applications begin sending data using Layer 7 (application layer protocol), such as HTTP etc.
+
+### SYN Floods -
+
+A SYN flood uses the built in patience of the
+TCP stack to overwhelm a server by sending a large number of SYN packets and then ignoring the SYN-ACKs returned by the server.
+
+This causes the server to use up resources waiting for a set amount of time for the anticipated ACK that should come from a legitimate client.
+
+There are only so many concurrent TCP connections that a web or application server can have open, so if an attacker sends enough SYN packets to a server, it can easily eat through the allowed number of TCP connections.
+
+_This then prevents legitimate requests from being answered by the server._
+
+### Amplification Attack -
+
+Amplification/reflection attacks can include things such as NTP, SSDP, DNS, CharGEN, SNMP attacks, etc.
+
+This is where an attacker may send a third-party server (such as an NTP server) a request using a spoofed IP address.
+
+That server will then respond to that request with a greater payload than the initial request (usually within the region of 28-54 times larger than the request) to the spoofed IP address.
+
+This means that if the attacker sends a packet with a spoofed IP address of 64 bytes, the NTP server would respond with up to 3,456 bytes of traffic.
+
+_Attackers can coordinate this and use multiple NTP servers a second to send legitimate
+NTP traffic to the target._
+
+### Layer 7 Attack -
+
+A Layer 7 attack occurs where a web server receives a flood of GET or POST requests, usually from a botnet or a large number of compromised computers.
+
+# CloudTrail
+
+-   CloudTrail Events logs API calls or activities.
+-   CloudTrail Events stores the last 90 days of events in its Event History. This is enabled by default and is no additional cost.
+-   This event history simplifies security analysis, resource change tracking, and troubleshooting.
+-   There are two types of events that can be logged in CloudTrail: management events and data events.
+-   Management events provide information about management operations that are performed on resources in your AWS account.
+
+Think of Management events as things normally done by people when they are in AWS. Examples:
+
+-   a user sign in
+-   a policy changed
+-   a newly created security configuration
+-   a logging rule deletion
+
+Data events provide information about the resource operations performed on or in a resource.
+
+Think of Data events as things normally done by software when hitting various AWS endpoints. Examples:
+
+-   S3 object-level API activity
+-   Lambda function execution activity
+
+By default, CloudTrail logs management events, but not data events.
+
+By default, CloudTrail Events log files are encrypted using Amazon S3 server-side encryption (SSE). You can also choose to encrypt your log files with an AWS Key Management Service (AWS KMS) key. As these logs are stored in S3, you can define Amazon S3 lifecycle rules to archive or delete log files automatically. If you want notifications about log file delivery and validation, you can set up Amazon SNS notifications.
+
+# AWS Shield
+
+**FREE DDOS PROTECTION**
+
+-   Protects all AWS customers on Elastic Load Balancing (ELB), Amazon CloudFront, and Route 53.
+
+-   Protects against SYN/UDP floods, reflection attacks, and other Layer 3 and Layer 4 attacks.
+
+# AWS Shield Advanced
+
+-   Provides enhanced protections for your applications running on Elastic Load Balancing (ELB), Amazon CloudFront, and Route 53 against larger and more sophisticated attacks.
+-   Offers always-on, flow-based monitoring of network traffic and active application monitoring to provide near real-time notifications of DDoS attacks.
+-   Gives you 24/7 access to the DDoS Response Team (DRT) to help manage and mitigate application-layer DDoS attacks.
+-   Protects your AWS bill against higher fees due to Elastic Load Balancing (ELB), Amazon CloudFront, and Amazon Route 53 usage spikes during a DDoS attack.
+
+**Shield Advanced costs $3,000 USD per month.**
+
+# AWS WAF (Web Application Firewall)
+
+AWS WAF is a web application firewall that lets you monitor the HTTP and HTTPS requests that are forwarded to Amazon CloudFront or an Application Load Balancer.
+
+AWS WAF also lets you control access to your content.
+
+You can configure conditions such as what IP addresses are allowed to make this request or what query string parameters need to be passed for the request to be allowed.
+
+The Application Load Balancer or CloudFront will either allow this content to be received or give an HTTP 403 status code.
+
+**AWS WAF operates at Layer 7**
+
+### AWS WAF ALLOWS 3 Different Behaviors :
+
+-   Allow all requests except the ones you specify.
+-   Block all requests except the ones you specify.
+-   Count the requests that match the properties you specify.
+
+_You can define conditions by using characteristics of web requests such as the following :_
+
+-   IP addresses that requests originate from
+-   Country that requests originate from
+-   Values in request headers
+-   Presence of SQL code that is likely to be malicious (known as SQL injection)
+-   Presence of a script that is likely to be malicious (known as cross-site scripting)
+-   Strings that appear in requests - either specific strings or strings that match regular expression (regex) patterns
+
+# Amazon GuardDuty
+
+GuardDuty is a threat detection service that uses machine learning to continuously monitor for malicious behavior.
+
+-   Unusual API calls, calls from a known malicious IP
+-   Attempts to disable CloudTrail logging
+-   Unauthorized deployments
+-   Compromised instances
+-   Reconnaissance by would-be attackers
+
+**GuardDuty Features** -
+
+-   Alerts appear in the GuardDuty console and
+    CloudWatch Events
+-   Receives feeds from third parties like Proofpoint and CrowdStrike, as well as AWS Security, about known malicious domains and IP addresses, etc.
+-   Monitors CloudTrail logs, VPC Flow Logs, and
+    DNS logs
+-   Centralize threat detection across multiple AWS
+    accounts
+-   Automated response using CloudWatch Events and Lambda
+-   Machine learning and anomaly detection
+
+#### Threat Detection with AI
+
+7-14 days to set a baseline - _what is normal behavior on your account?_
+
+Once active, you will see findings on the GuardDuty console and in CloudWatch Events only if GuardDuty detects behavior it considers a threat.
+
+### GuardDuty Pricing
+
+**30 DAYS FREE!**
+
+CHARGES BASED ON:
+
+-   Quantity of CloudTrail events
+-   Volume of DNS and VPC Flow Logs data
+
+# Firewall Manager
+
+Firewall Manager is a security management service in a single pane of glass. This allows you to centrally set up and manage firewall rules across multiple AWS accounts and applications in AWS Organizations.
+
+### Manage Security across Multiple Accounts -
+
+Using Firewall Manager, you can create new AWS WAF rules for your Application Load Balancers, API gateways, and Amazon CloudFront distributions. You can also mitigate DDOS attacks using AWS Shield Advanced for your Application Load Balancers, Elastic IP addresses, CloudFront distributions, and more.
+
+### Benefits of Firewall Manager -
+
+-   Simplify Management of Firewall :
+    Rules across Your Accounts
+    One single pane of glass allows you to manage security across multiple AWS services and accounts.
+-   Ensure Compliance of Existing and New Applications :
+    Firewall Manager automatically enforces security policies that you create across existing and newly created resources, across multiple accounts.
+
+# AWS Macie
+
+To understand Macie, it is important to understand PII or Personally Identifiable Information:
+
+Personal data used to establish an individual's identity. This data could be exploited by criminals, used in identity theft and financial fraud
+
+-   Home address, email address, Social Security number
+-   Passport number, driver's license number
+-   Date of birth, phone number, bank account, credit card number
+
+Amazon Macie is an ML-powered security service that helps you prevent data loss by automatically discovering, classifying, and protecting sensitive data stored in Amazon S3. Amazon Macie uses machine learning to recognize sensitive data such as personally identifiable information (PII) or intellectual property, assigns a business value, and provides visibility into where this data is stored and how it is being used in your organization.
+
+You can be informed of detections via the Macie dashboards, alerts, or reporting.
+
+Macie can also analyze CloudTrail logs to see who might have interacted with sensitive data.
+
+Macie continuously monitors data access activity for anomalies, and delivers alerts when it detects risk of unauthorized access or inadvertent data leaks.
+
+Macie has ability to detect global access permissions inadvertently being set on sensitive data, detect uploading of API keys inside source code, and verify sensitive customer data is being stored and accessed in a manner that meets their compliance standards.
+
+# Amazon Inspector
+
+Amazon Inspector is an automated security assessment service that helps improve the security and compliance of applications deployed on AWS.
+
+Amazon Inspector automatically assesses applications for vulnerabilities or deviations from best practices.
+
+### Assessment Findings -
+
+After performing an assessment, Amazon Inspector produces a detailed list of security findings prioritized by level of severity.
+
+These findings can be reviewed directly or as part of detailed assessment reports that are available via the Amazon Inspector console or API.
+
+_2 Types of Assessment :_
+
+![alt text](/Photos/image67.png)
+
+**Instructions :**
+
+-   Create assessment target
+-   Install agents on EC2 instances
+    AWS will automatically install the agent for instances that allow Systems Manager Run Command.
+-   Create assessment template
+-   Perform assessment run
+-   Review findings against rules
+
+# KMS
+
+AWS Key Management Service (AWS KMS) is a managed service that makes it easy for you to create and control the encryption keys used to encrypt your data.
+
+_Integration_ :
+
+AWS KMS is integrated with other AWS services - such as EBS, S3, and RDS — as well as other services to make it simple to encrypt your data with encryption keys you manage.
+
+_Controlling Your Keys_ :
+
+AWS KMS provides you with centralized control over the lifecycle and permissions of your keys.
+You can create new keys whenever you wish, and you can control who can manage keys separately from who can use them.
+
+### СМК :
+
+A customer master key (CMK) is a logical representation of a master key. The CMK includes metadata, such as the key ID, creation date, description, and key state.
+
+The CMK also contains the key material used to encrypt and decrypt data.
+
+## HSM
+
+A hardware security module (HSM) is a physical computing device that safeguards and manages digital keys and performs encryption and decryption functions.
+
+An HSM contains one or more secure cryptoprocessor chips.
+
+**Ways to Generate a CMK** :
+
+-   AWS creates the CMK for you. The key material for a CMK is generated within HSMs managed by AWS KMS.
+-   Import key material from your own key management infrastructure and associate it with a CMK.
+-   Have the key material generated and used in an
+    AWS CloudHSM cluster as part of the custom key store feature in AWS KMS.
+
+## Key Rotation -
+
+You can choose to have AWS KMS automatically rotate CMKs every year, provided that those keys were generated within AWS KMS HSMs.
+
+Automatic key rotation is not supported for imported keys, asymmetric keys, or keys generated in an AWS CloudHSM cluster using the AWS KMS custom key store feature.
+
+## Policies
+
+The primary way to manage access to your
+AWS KMS CMKs is with policies. Policies are documents that describe who has access to what.
+
+Policies attached to an IAM identity are called identity-based policies (or IAM policies), and policies attached to other kinds of resources are called resource-based policies.
+
+### Ways to Control Permissions :
+
+-   Use the key policy : Controlling access this way means the full scope of access to the CMK is defined in a single document (the key policy).
+
+-   Use IAM policies in combination with the key policy : Controlling access this way enables you to manage all the permissions for your IAM identities in IAM.
+
+-   Use grants in combination with the key policy : Controlling access this way enables you to allow access to the CMK in the key policy, as well as allow users to delegate their access to others.
+
+## CloudHSM
+
+AWS CloudHSM is a cloud-based HSM that enables you to easily generate and use your own encryption keys on the AWS Cloud.
+
+It is a physical device, entirely dedicated to you, that can be deployed in a highly available fashion.
+
+![alt text](/Photos/image68.png)
+
+# Secrets Manager
+
+Secrets Manager is a service that securely stores, encrypts, and rotates your database credentials and other secrets.
+
+-   Encryption in transit and at rest using KMS
+-   Automatically rotates credentials
+-   Apply fine-grained access control using IAM policies
+-   Costs money but is highly scalable
+
+### What else can Secrets Manager do?
+
+-   Your application makes an API call to Secrets
+    Manager to retrieve the secret programmatically
+-   Reduces the risk of credentials being compromised
+
+### What can be stored?
+
+-   RDS credentials
+-   Credentials for non-RDS databases
+-   Any other type of secret, provided you can store it as a key-value pair (SSH keys, API keys)
+
+> If you enable rotation, Secrets Manager immediately rotates the secret once to test the configuration.
+
+Ensure all of your applications that use these credentials are updated to retrieve the credentials from this secret using Secrets Manager.
+
+**If your applications are still using embedded credentials, do not enable rotation because the embedded credentials will no longer work and this will break your application.**
+
+**This is the recommended setting if your applications are not already using embedded credentials (i.e., they are not going to try to connect to the database using the old credentials).**
+
+# Parameter Store
+
+Parameter Store is a capability of AWS Systems Manager that provides secure, hierarchical storage for configuration data management and secrets management.
+
+You can store data such as passwords, database strings, Amazon Machine Image (AMI) IDs, and license codes as parameter values. You can store values as plain text or encrypted data.
+
+_Limits to Parameter Store_ :
+
+-   Limit to the number of parameters you can store (currently 10,000)
+-   No key rotation
+
+## Presigned URLs or Cookies
+
+**All objects in S3 are private by default.**
+
+Only the object owner has permission to access these objects. However, the object owner can optionally share objects with others by creating a presigned URL, using their own security credentials, to grant time-limited permission to download the objects.
+
+Presigned URLs :
+When you create a presigned URL for your object, you must provide your security credentials, specify a bucket name and an object key, and indicate the HTTP method (or GET to download the object) as well as expiration date and time.
+
+_The presigned URLs are valid only for the specified duration._
+
+Anyone who receives the presigned URL can then access the object. For example, if you have a video in your bucket and both the bucket and the object are private, you can share the video with others by generating a presigned URL.
+
+Presigned Cookies :
+This can be useful when you want to provide access to multiple restricted files. The cookie will be saved on the user's computer, and they will be able to browse the the entire contents of the restricted content.
+
+## Amazon Resource Names (ARNs)
+
+![alt text](/Photos/image69.png)
+
+## IAM Policies
+
+JSON document that defines permissions
+
+-   Identity policy
+-   Resource policy
+-   No effect until attached
+-   List of statements
+
+_A policy document is a list of statements._
+
+_Each statement matches an AWS API request._
+
+![alt text](/Photos/image70.png)
+
+## Permission Boundaries
+
+-   Used to delegate administration to other users
+-   Prevent privilege escalation or unnecessarily broad permissions
+-   Control maximum permissions an IAM policy can grant
+
+**USE CASES:**
+
+-   Developers creating roles for Lambda functions
+-   Application owners creating roles for EC2 instances
+-   Admins creating ad hoc users
+
+# Certificate Manager
+
+AWS Certificate Manager allows you to create, manage, and deploy public and private SSL certificates for use with other AWS services.
+
+It integrates with other services - such as Elastic Load Balancing, CloudFront distributions, and API Gateway - allowing you to easily manage and deploy SSL certificates in your AWS environment.
+
+**Benefits** :
+
+-   No more paying for SSL certificates! AWS
+    Certificate Manager provisions both public and private certificates for free. You will still pay for the resources that utilize your certificates (such as Elastic Load Balancing).
+-   Certificate Manager can automate the renewal of your SSL certificate and then automatically update the new certificate with ACM-integrated services, such as Elastic Load Balancing, CloudFront, and API Gateway.
+-   Removes a lot of the manual process, such as generating a key pair or creating a certificate signing request (CSR). You can create your own SSL certificate with just a few clicks in the AWS Management Console.
+
+# Audit Manager
+
+With it, you can continually audit your AWS usage to make sure you stay compliant with industry standards and regulations.
+
+Audit Manager is an automated service that produces reports specific to auditors for PCI compliance, GDPR, and more.
+
+**Use Cases** :
+
+-   It allows you to produce automated reports for auditors and reduces the need to compile these reports manually.
+-   It works on a continuous basis so that, as your AWS environment evolves and adapts, you can produce automated reports to evaluate your environment against industry standards (such as PCI compliance).
+    You can create a new framework
+-   You can create a new framework from the beginning or customize prebuilt frameworks. You can also launch assessments to automatically collect evidence, helping you validate if your internal policies are being followed.
+
+# Artifact
+
+Artifact is a single source you can visit to get the compliance-related information that matters to you, such as AWS security and compliance reports or select online agreements.
+
+There are a huge number of
+compliance reports available, such as AWS Service Organization Control (SOC) reports, Payment Card Industry (PCI) reports, and GDPR reports, as well as other certifications (including
+ISO reports, HIPAA, and more).
+
+# Cognito
+
+Cognito provides authentication, authorization, and user management for your web and mobile apps in a single service without the need for custom code. Your users can sign in directly with a username and password they create or through a third party (e.g., Facebook, Amazon, Google, or Apple).
+
+**Features:**
+
+-   Sign-up and sign-in options for your apps
+-   Access for guest users
+-   Acts as an identity broker between your application and web ID providers, so you don't need to write any custom code
+-   Synchronizes user data across multiple devices
+-   Recommended for all mobile applications that call AWS services
+
+**Use Cases** -
+
+-   Users can sign in using a user pool or a third-party identity provider, such as Facebook.
+-   Users can authenticate using identity pools that require an identity provider (IdP)
+    token.
+-   A signed-in user is given a token that allows them access to resources that you specify.
+-   Users can be given access to AppSync resources with tokens received from user or identity pool in Cognito.
+
+## User Pools and Identity Pools -
+
+The two main components of Cognito are user pools and identity pools.
+
+User pools are directories of users that provide sign-up and sign-in options for your application users.
+
+Identity pools allow you to give your users access to other AWS services.
+You can use identity pools and user pools either separately or together.
+
+![alt text](/Photos/image71.png)
+
+![alt text](/Photos/image72.png)
+
+# Detective
+
+Using Detective, you can analyze, investigate, and quickly identify the root cause of potential security issues or suspicious activities.
+
+Detective pulls data in from your AWS resources and uses machine learning, statistical analysis, and graph theory to build a linked set of data that enables you to quickly figure out the root cause of your security issues.
+
+_Detective Sources_ -
+
+Detective uses a number of sources within your AWS account (including
+VPC Flow Logs, Cloud Trail logs,
+Amazon Elastic Kubernetes Service audit logs, and Amazon GuardDuty findings) to automatically create an overview of your users, resources, and the interactions between them over time.
+
+**Use Cases :**
+
+-   If you have a suspected security instance, you need to be able to quickly assess if it's in fact real or a false positive.
+
+    Detective generates visualizations that can show you what resources, IP addresses, and AWS accounts are connected to your security incident to determine if the finding is an actual malicious activity or not.
+
+-   In comparison to root cause analysis, you can also be proactive and go threat hunting.
+
+    Detective helps with threat hunting by creating detailed visualizations on specific resources, such as IP addresses, AWS accounts, VPC, and EC2 instances.
+
+# AWS Network Firewall
+
+Network Firewall is a managed service that makes it easy to deploy physical firewall protection across your VPCs. It has a managed infrastructure (i.e., a physical firewall that is managed by AWS).
+
+Network Firewall includes a firewall rules engine that gives you complete control over your network traffic, allowing you to do things such as block outbound Server Message Block (SMB) requests to stop the spread of malicious activity.
+
+**Use Cases** :
+
+-   You can use methods like access control list (ACL) rules, stateful inspection, protocol detection, and intrusion prevention to filter your internet traffic.
+-   You can use a network firewall to provide the URL/ domain name, IP address, and content-based outbound traffic filtering. This will help you to stop possible data loss and block known malware communications.
+-   You can automatically inspect traffic moving from one VPC to another as well as across multiple accounts.
+
+# Security Hub
+
+Security Hub is a single place to view all your security alerts from services like Amazon GuardDuty, Amazon Inspector, Amazon Macie, and AWS Firewall Manager.
+
+It works across multiple accounts.
+
+**Use Cases** :
+
+-   Use automated checks that comply with common frameworks (such as CIS or PCI DSS) to help reduce your risk.
+-   Aggregate all your security findings in one place, allowing your security staff to more easily identify threats and alerts.
