@@ -1,36 +1,30 @@
-# Theory for _AWS Certified Solutions Architect Associate (SAA-CO3)_
+# CONTENTS `SAA-CO3`
 
--   [`AWS Well-Architected Framework`](#aws-well-architected-framework)
--   [`IAM`](#identity-access-management)
--   [`S3`](#simple-storage-service)
--   [`EC2`](#elastic-compute-cloudec2)
--   [`EBS and EFS`](#elastic-block-storage-and-elastic-file-system)
--   [`DATABASES`](#databases)
--   [`AWS VPC NETWORKING`](#virtual-private-cloud-vpc-networking)
--   [`AWS ROUTE 53`](#route53)
--   [`AWS ELASTIC LOAD BALANCERS`](#elastic-load-balancers-elb)
--   [`SCALING`](#scaling)
--   [`AWS AUTO-SCALING`](#auto-scaling)
+-   [`AWS FUNDAMENTALS`](#aws-fundamentals)
+-   [`IDENTITY AND ACCESS MANAGEMENT (IAM)`](#identity-access-management-iam)
+-   [`SIMPLE STORAGE SERVICE (S3)`](#simple-storage-service-s3)
+-   [`ELASTIC COMPUTE CLOUD (EC2)`](#elastic-compute-cloudec2)
+-   [`ELASTIC BLOCK STORAGE (EBS) & ELASTIC FILE SYSTEM (EFS)`](#elastic-block-storageebs--elastic-file-systemefs)
+-   [`VIRTUAL PRIVATE CLOUD (VPC) NETWORKING`](#virtual-private-cloud-vpc-networking)
+-   [`ROUTE 53`](#route53)
+-   [`ELASTIC LOAD BALANCING (ELB)`](#elastic-load-balancers-elb)
+-   [`MONITORING`](#monitoring)
+-   [`HIGH AVAILABALITY AND SCALING`](#high-availability-and-scaling)
 -   [`DECOUPLING WORKFLOWS`](#decoupling-workflows)
--   [`AWS SIMPLE QUEUING SERVICE`](#simple-queuing-service-sqs)
--   [`AWS SIMPLE NOTIFICATION SERVICE`](#simple-notification-service-sns)
--   [`AWS API GATEWAY`](#api-gateway)
--   [`AWS BATCH`](#aws-batch)
--   [`AMAZON MQ`](#amazon-mq)
--   [`AWS STEP FUNCTIONS`](#aws-step-functions)
--   [`AMAZON APPFLOW`](#amazon-appflow)
--   [`AMAZON BIG DATA`](#big-data)
--   [`AMAZON REDSHIFT`](#amazon-redshift)
--   [`AMAZON ELASTIC MAPREDUCE`](#emr)
--   [`AMAZON KINESIS`](#kinesis)
--   [`AMAZON ATHENA`](#amazon-athena)
--   [`AMAZON GLUE`](#amazon-glue)
--   [`AMAZON QUICKSIGHT`](#amazon-quicksight)
--   [`AWS DATA PIPELINE`](#aws-data-pipeline)
--   [`AMAZON MSK`](#amazon-msk)
--   [`AMAZON OPENSEARCH`](#amazon-opensearch)
+-   [`BIG DATA`](#big-data)
+-   [`SERVERLESS ARCHITECTURE`](#serverless-architecture)
+-   [`SECURITY`](#security)
+-   [`AUTOMATION`](#automation)
+-   [`CACHING`](#caching)
+-   [`GOVERNANCE`](#governance)
+-   [`MIGRATION`](#migration)
+-   [`FRONT-END WEB & MOBILE`](#front-end-web-and-mobile)
+-   [`MACHINE LEARNING`](#machine-learning)
+-   [`MEDIA`](#media)
 
 ---
+
+# AWS FUNDAMENTALS
 
 # AWS Well-Architected Framework
 
@@ -58,7 +52,7 @@ against best practices and identify areas for improvement.
 
 ---
 
-# Identity Access Management
+# Identity Access Management (IAM)
 
 ![alt text](/Photos/aws-iam.png)
 
@@ -135,7 +129,7 @@ Default Deny (or Implicit Deny): IAM identities start off with no resource acces
 
 If you already manage user identities outside of AWS, you can use identity providers instead of creating IAM users in your AWS account. With an identity provider (IdP), you can manage your user identities outside of AWS and give these external user identities permissions to use AWS resources in your account. This is useful if your organization already has its own identity system, such as a corporate user directory. It is also useful if you are creating a mobile app or web application that requires access to AWS resources.
 
-# Simple Storage Service
+# Simple Storage Service (S3)
 
 S3 stands for Simple Storage Service and it's a object storage in the cloud.
 
@@ -835,7 +829,7 @@ Outposts brings the AWS data center directly to you, on-premises. Outposts allow
 
 ---
 
-# Elastic Block Storage and Elastic File System
+# Elastic Block Storage(EBS) & Elastic File System(EFS)
 
 ---
 
@@ -1872,6 +1866,8 @@ _Disable Enable deregistration delay_ : Do this if you want your load balancer t
 
 ---
 
+# MONITORING
+
 # CloudWatch
 
 Amazon CloudWatch is a monitoring and observability service. It provides you with data and actionable insights to monitor your applications, respond to system-wide performance changes, optimize resource utilization, and get a unified view of operational health.
@@ -1977,7 +1973,7 @@ Serverless, Prometheus-compatible service used for securely monitoring container
 
 ---
 
-# Scaling
+# High Availability and Scaling
 
 ## What Is Horizontal Scaling?
 
@@ -2623,7 +2619,7 @@ Elasticsearch Service.
 
 OpenSearch is a distributed, community-driven, Apache 2.0-licensed, 100% open-source search and analytics suite used for a broad set of use cases like real-time application monitoring, log analytics, and website search. OpenSearch provides a highly scalable system for providing fast access and response to large volumes of data with an integrated visualization tool, OpenSearch Dashboards, that makes it easy for users to explore their data. OpenSearch is powered by the Apache Lucene search library, and it supports a number of search and analytics capabilities such as k-nearest neighbors (KNN) search, SQL, Anomaly Detection, Machine Learning Commons, Trace Analytics, full-text search, and more.
 
-# SERVERLESS
+# SERVERLESS ARCHITECTURE
 
 # AWS Lambda
 
@@ -3373,3 +3369,1039 @@ It works across multiple accounts.
 
 -   Use automated checks that comply with common frameworks (such as CIS or PCI DSS) to help reduce your risk.
 -   Aggregate all your security findings in one place, allowing your security staff to more easily identify threats and alerts.
+
+---
+
+# AUTOMATION
+
+Manual builds are a gamble. The best-case scenario is that you'll build it correctly, but you're more likely to make some costly errors.
+
+### Automation Benefits -
+
+-   We have more important things to do at work than manual processes.
+-   Easier to prevent security incidents, and if one occurs you can quickly fix it.
+-   When you automate, you get the same results every single time.
+
+# AWS CloudFormation
+
+CloudFormation is an automated tool for provisioning entire cloud-based environments. It is similar to Terraform where you codify the instructions for what you want to have inside your application setup (X many web servers of Y type with a Z type DB on the backend, etc). It makes it a lot easier to just describe what you want in markup and have AWS do the actual provisioning work involved.
+
+Everything is defined via a JSON or
+YAML template file.
+
+-   A full CloudFormation setup is called a stack.
+    Once a template is created, AWS will make the corresponding stack. This is the living and active representation of said template. One template can create an infinite number of stacks.
+
+**Not ALL AWS resources are supported, but most are!**
+
+![alt text](/Photos/image73.png)
+
+### Using CloudFormation :
+
+-   Infrastructure as Code :
+    Allows you to easily leverage version control for all supported
+    AWS infrastructure resources.
+-   Cost Tracking :
+    Leverage stack tags in order to easily identify resources and their cost.
+-   Automated Deployment :
+    No more having to manually stand up resources. Deploy and destroy them automatically via a template!
+-   Stacks Are Regional :
+    Each stack you deploy is a regional resource. Easily deploy portable stacks into other regions as needed!
+-   Change Sets :
+    You can generate a preview of resource changes when updating an existing stack.
+-   Stack Sets :
+    Use an admin account to create, update, or delete stacks across multiple accounts and Regions with a single operation.
+
+## Template Sections :
+
+-   `OPTIONAL` AWSTemplateFormatVersion
+-   `OPTIONAL` Parameters
+-   `OPTIONAL` Mappings
+-   `REQUIRED` Resources
+-   `OPTIONAL` Outputs
+-   `OPTIONAL` Transform
+
+---
+
+## Platform as a Service (PaaS)
+
+PaaS is a single-stop application deployment model.
+You bring your code, and the provider builds everything for you, deploys your application, and then manages it going forward.
+
+---
+
+# ElasticBeanstalk
+
+ElasticBeanstalk is another way to script out your provisioning process by deploying existing applications to the cloud. ElasticBeanstalk is aimed toward developers who know very little about the cloud and want the simplest way of deploying their code.
+
+Elastic Beanstalk is your main stop for everything PaaS in AWS. Let your developers worry about development!
+
+-   Just upload your application and ElasticBeanstalk will take care of the underlying infrastructure.
+-   ElasticBeanstalk has capacity provisioning, meaning you can use it with autoscaling from the get-go. ElasticBeanstalk applies updates to your application by having a duplicate ready with the already updated version. This duplicate is then swapped with the original. This is done as a preventative measure in case your updated application fails. If the app does fail, ElasticBeanstalk will switch back to the original copy with the older version and there will be no downtime experienced by the users who are using your application.
+-   You can use ElasticBeanstalk to even host Docker as Elastic Beanstalk supports the deployment of web applications from containers. With Docker containers, you can define your own runtime environment, your own platform, programming language, and any application dependencies (such as package managers or tools) that aren't supported by other platforms. ElasticBeanstalk makes it easy to deploy Docker as Docker containers are already self-contained and include all the configuration information and software required to run.
+
+# AWS Systems Manager
+
+AWS Systems Manager is a suite of tools designed to let you view, control, and automate both your managed instances in AWS and on-premises.
+
+**You must be comfortable with the AWS Systems Manager Agent (SSM Agent)!**
+
+### List of Important Capabilities -
+
+-   Automation: Use predefined or custom playbooks (documents) to enable resource management
+-   Run Command: Remotely execute commands on managed compute without SSH or RDP
+-   Patch Manager: Automates patching managed instances (OS patches and applications)
+-   Parameter Store: Securely store your secrets and application configuration information
+-   Maintenance Windows: Define a schedule for performing actions on your managed instances
+-   Session Manager: Securely connect to your managed compute without needing SSH access
+
+### Session Manager Concepts -
+
+-   Logging :
+    Allows you to log all usage during sessions (commands and connections)
+    to CloudWatch and CloudTrail
+-   SSM Agent :
+    Supports both Linux and Windows without the need for SSH or RDP.
+    Agent-based connection without opening ports!
+
+## SSM Agent
+
+-   Amazon software that runs on your compute\* that makes it possible for Systems Manager to update, manage, and configure these resources
+
+_Amazon EC2, edge devices (AWS and non-AWS loT), on-prem servers, and custom VMs_
+
+-   Typically preinstalled on a majority of the official AWS AMls.
+    Just ensure you have the IAM permissions needed and it is running!
+-   It is possible to install the SSM Agent on your own compute and edge devices to allow Sytems Manager interactions
+
+## AWS Systems Manager Parameter Store
+
+Parameter Store, a capability of AWS Systems Manager, provides secure, hierarchical storage for configuration data management and secrets management.
+
+-   Free feature to store config data and secret values in a hierarchical manner (/dev/db_pass) with parameter policies (expiration dates)
+-   String: Parameters contain a block of plaintext
+-   StringList: Parameters contain a comma-separated list of values
+-   SecureString: Parameter where sensitive data needs to be stored and
+    referenced in a secure manner (encrypted via AWS KMS)
+
+---
+
+# CACHING
+
+# CloudFront
+
+The AWS CDN service is called CloudFront. It serves up cached content and assets for the increased global performance of your application. The main components of CloudFront are the edge locations (cache endpoints), the origin (original source of truth to be cached such as an EC2 instance, an S3 bucket, an Elastic Load Balancer or a Route 53 config), and the distribution (the arrangement of edge locations from the origin or basically the network itself).
+
+-   When content is cached, it is done for a certain time limit called the Time To Live, or TTL, which is always in seconds
+-   If needed, CloudFront can serve up entire websites including dynamic, static, streaming and interactive content.
+-   Requests are always routed and cached in the nearest edge location for the user, thus propagating the CDN nodes and guaranteeing best performance for future requests.
+-   There are two different types of distributions:
+    -   Web Distribution: web sites, normal cached items, etc
+    -   RTMP: streaming content, adobe, etc
+-   Edge locations are not just read only. They can be written to which will then return the write value back to the origin.
+-   Cached content can be manually invalidated or cleared beyond the TTL, but this does incur a cost.
+-   You can invalidate the distribution of certain objects or entire directories so that content is loaded directly from the origin every time. Invalidating content is also helpful when debugging if content pulled from the origin seems correct, but pulling that same content from an edge location seems incorrect.
+-   You can set up a failover for the origin by creating an origin group with two origins inside. One origin will act as the primary and the other as the secondary. CloudFront will automatically switch between the two when the primary origin fails.
+-   Amazon CloudFront delivers your content from each edge location and offers a Dedicated IP Custom SSL feature. SNI Custom SSL works with most modern browsers.
+
+# ElastiCache
+
+The ElastiCache service makes it easy to deploy, operate, and scale an in-memory cache in the cloud. It helps you boost the performance of your existing databases by retrieving data from high throughput and low latency in-memory data stores.
+
+The service is great for improving the performance of web applications by allowing you to receive information locally instead of relying solely on relatively distant DBs.
+
+Amazon ElastiCache offers fully managed Redis and Memcached for the most demanding applications that require sub-millisecond response times.
+
+For data that doesn’t change frequently and is often asked for, it makes a lot of sense to cache said data rather than querying it from the database.
+
+Common configurations that improve DB performance include introducing read replicas of a DB primary and inserting a caching layer into the storage architecture.
+
+Memcached is for simple caching purposes with horizontal scaling and multi-threaded performance, but if you require more complexity for your caching environment then choose Redis.
+
+![alt text](/Photos/image74.png)
+
+Another advantage of using ElastiCache is that by caching query results, you pay the price of the DB query only once without having to re-execute the query unless the data changes.
+
+Amazon ElastiCache can scale-out, scale-in, and scale-up to meet fluctuating application demands. Write and memory scaling is supported with sharding. Replicas provide read scaling.
+
+# AWS Global Accelerator
+
+AWS Global Accelerator accelerates connectivity to improve performance and availability for users. Global Accelerator sits on top of the AWS backbone and directs traffic to optimal endpoints worldwide. By default, Global Accelerator provides you two static IP addresses that you can make use of.
+
+Global Accelerator helps reduce the number of hops to get to your AWS resources. Your users just need to make it to an edge location and once there, everything will remain internal to the AWS global network. Normally, it takes many networks to reach the application in full and paths to and from the application may vary. With each hop, there is risk involved either in security or in failure.
+
+![alt text](/Photos/image75.png)
+
+In summary, Global Accelerator is a fast/reliable pipeline between user and application.
+
+It's like going on a trip (web traffic) and stopping to ask for directions in possibly unsafe parts of town (multiple networks are visited which can increase security risks) as opposed to having a GPS (global accelerator) that leads you directly where you want to go (endpoint) without having to make unnecessary stops.
+
+It can be confused with Cloudfront, but CloudFront is a cache for content stemming from a distant origin server.
+
+While CloudFront simply caches static content to the closest AWS Point Of Presence (POP) location, Global accelerator will use the same Amazon POP to accept initial requests and routes them directly to the services.
+
+Route53's latency based routing might also appear similar to Global Accelerator, but Route 53 is for simply helping choose which region for the user to use. Route53 has nothing to do with actually providing a fast network path.
+
+Global Accelerator also provides fast regional failover.
+
+---
+
+Accelerator: Directs user traffic to the optimal AWS endpoints.
+
+Listener: Processes inbound connections based on ports and protocols.
+
+Endpoint: Resources that Global Accelerator
+directs traffic to.
+
+-   GA provides two static Anycast IP addresses for your accelerators.
+-   Dual-stack receives four static IP addresses (two IPv4 and two IPv6).
+-   Static IPs act as a single, fixed entry for ALL client traffic.
+-   Standard: Traffic routed based on user location, health checks, and weights.
+-   Custom: Traffic routed to specified EC2 instances and ports in a VPC.
+
+---
+
+# Governance
+
+AWS Organizations is a free governance tool that allows you to create and manage multiple
+AWS accounts.
+With it, you can control your accounts from a single location rather than jumping from account to account.
+
+**Account Types** -
+
+-   Management Account : Also called the Payer account, this is the primary account that hosts and manages the organization
+
+-   Member Account : All other AWS accounts that belong to the organization
+
+**Features :**
+
+-   Consolidated Billing: Rolls all bills up to the payer account. Single payment method.
+-   Usage Discounts: Consolidated billing allows for aggregate usage discounts.
+-   Shared Savings: Easily share Reserved Instances and Savings Plans across the org.
+
+---
+
+Multi-account :
+Allows you to easily achieve a multi-account design while maintaining centralized management.
+
+Tag Enforcement:
+Capability to require specific tags is leveraged for all AWS resources.
+
+Organizational Unit (OU) :
+Logical grouping of multiple accounts to allow for easy management and separation.
+
+Service Control Policies (SCPs) :
+JSON policies that get applied to OUs or accounts to restrict actions that are or are not allowed.
+
+![alt text](/Photos/image76.png)
+
+Management Account :
+SCP do not affect the management account like they do all member accounts.
+
+Account Best Practices :
+Create a centralized logging account for organizational CloudTrail logs.
+Also, leverage cross-account roles for accessing member accounts.
+
+# AWS Resource Access Manager (RAM)
+
+A free service that allows you to share AWS resources with other accounts inside or outside your organization. AWS RAM allows you to easily share resources rather than having to create duplicate copies in your different accounts.
+
+**Shared Resources** -
+
+-   Transit gateways
+-   VPC subnets
+-   License Manager
+-   Route 53 Resolver (Rules and Endpoints)
+-   Dedicated Hosts
+    etc.
+
+#### Owners and Participants -
+
+-   Ownership :
+    Owners create and manage the
+    VPC resources that get shared
+    CANNOT delete or modify resourced deployed by participant accounts
+-   Participant Accounts :
+    Able to provision services into the shared VPC subnets.
+    CANNOT modify or delete the shared resources!
+
+# AWS Config
+
+Config is an inventory management and control tool.
+
+It allows you to show the configuration history of your infrastructure over time.
+
+-   Offers the ability to create rules to make sure resources conform to your requirements.
+-   Capable of receiving alerts via SNS.
+-   Configured per Region!
+-   Results can be aggregated across Regions and
+    AWS Accounts.
+
+### State of Your Architecture -
+
+![alt text](/Photos/image77.png)
+
+### AWS Config Rules :
+
+-   AWS-managed
+    Config rules
+-   Custom Config rules
+-   Rules are evaluated on a schedule or by a trigger
+-   AWS Config is NOT preventative!
+-   AWS Config is not a free service
+
+    $0.003 per item,
+    $0.001 per rule evaluation
+
+With Config, you can review changes in configurations and relationships between AWS resources, dive into detailed resource configuration histories, and determine your overall compliance against the configurations specified in your internal guidelines. This enables you to simplify compliance auditing, security analysis, change management, and operational troubleshooting.
+
+## Alerts and Events :
+
+-   SNS :
+    Easily integrate SNS topics for alerting on configuration changes and compliance state notifications
+-   EventBridge :
+    EventBridge can send events from
+    AWS Config events to other AWS services like SQS and Lambda
+
+## Directory Service
+
+AWS Directory Service is a fully managed version of Active Directory. It allows you to offload the painful parts of keeping AD online to AWS while still giving you the full control and flexibility AD provides.
+
+### Why Use Directory Service?
+
+-   Managed Microsoft AD
+    This is the entire AD suite. You can easily build out AD in AWS.
+-   AD Connector
+    Creates a tunnel between AWS and your on-premises AD.
+-   Simple AD •
+    Standalone directory powered by Linux Samba
+    Active Directory-compatible server.
+
+# AWS Cost Explorer
+
+AWS Cost Explorer is an easy-to-use tool that allows you to visualize and analyze your cloud costs.
+You can generate custom reports based on a variety of factors, including resource tags.
+Break down cost by Monthly, Hourly, and more!
+Built-in forecasting up to 12 months.
+
+### Features
+
+-   Time
+-   Service•..
+    Easily break down costs on a service-by-service basis.
+-   Filter
+    Where is the spend coming from? Filter on tag, categories, etc.
+
+# AWS Budgets
+
+AWS Budgets allows organizations to easily plan and set expectations around cloud costs.
+You can easily track your ongoing spend and create alerts to let users know when they're close to exceeding their allotted spend.
+
+## Types of Budgets -
+
+-   Cost Budgets: Plan how much you want to spend on a service.
+-   Usage Budgets: Plan how much you want to use on one or many services.
+-   RI Utilization Budgets: Utilization threshold. See if your Ris are unused or under-utilized.
+-   RI Coverage Budgets: Coverage threshold. See how much of instance usage is covered by a reservation.
+-   Savings Plans Utilization Budgets: Utilization threshold. See if your Savings Plans are unused or under-utilized.
+-   Savings Plans Coverage Budgets: Coverage threshold. See how much of your instance usage is covered by Savings Plans.
+
+# AWS Cost and Usage Reports
+
+**Commonly abbreviated as AWS CUR**
+
+-   The most comprehensive set of cost and usage data available for AWS
+    spending
+-   Publish billing
+    reports to Amazon S3
+    for centralized collection
+-   Break costs down by the time span (hour, day, and month), service and resource, or by tags
+-   AWS CUR updates reports in Amazon S3 buckets once a day using CSV formats
+-   Easily integrate with Amazon Athena, Amazon Redshift, or Amazon QuickSight
+
+### AWS CUR Use Cases -
+
+-   Use within AWS Organizations for entire OU groups or individual member accounts.
+-   Track Savings Plans utilizations, charges, and current allocations.
+-   Monitor On-Demand capacity reservations.
+-   Break down your AWS data transfer charges (external and inter-Region).
+-   Dive deeper into cost allocation tag resource spending.
+
+# AWS Compute Optimizer
+
+-   Optimizes :
+    Analyzes configurations and utilization metrics of your AWS resources
+-   Graphs :
+    Provides graphical history data and projected utilization metrics
+-   Reporting :
+    Reports current usage optimizations and potential recommendations
+-   Informed Decisions :
+    Use graphs, metric data, and recommendations for moving or resizing resources
+
+_Which resources does the service work with?_
+
+-   Amazon EC2
+-   Auto Scaling Groups
+-   Amazon EBS
+-   AWS Lambda
+
+### Supported Accounts :
+
+-   Standalone :
+    Any standalone AWS account without AWS Organizations enabled
+-   Member Account :
+    Single member accounts within an
+    AWS organization
+-   Management Account :
+    AWS Organizations management account with recommendations based on the entire organization
+
+**It's Disabled by default! You must opt in to leverage AWS Compute Optimizer. After opting in, enhance recommendations via activation of recommendation preferences (e.g., enhanced infrastructure metrics paid feature).**
+
+# Savings Plans
+
+-   Flexible Pricing :
+    Offering of flexible pricing models for up to 72% savings on compute!
+-   Lower Prices :
+    Lower prices for EC2 instances regardless of instance family, size, OS, tenancy, or Regions.
+-   Variety :
+    Savings can also apply to
+    AWS Lambda and AWS
+    Fargate usage.
+-   SageMaker :
+    SageMaker plans for lowering Amazon SageMaker instance pricing.
+-   Commitments :
+    Savings are provided as a trade for long-term commitments.
+    There are one-year or three-year pricing options.
+-   Pricing Plan Options :
+    Choose from All Upfront, Partial Upfront, or No Upfront.
+
+### Savings Plans Types
+
+-   Compute Savings :
+    Most flexible savings plan
+    Applies to any EC2 compute, Lambda, or
+    Fargate usage
+    Up to 66% savings on compute
+
+-   EC2 Instance Savings :
+    Stricter savings plan
+    Applies only to EC2 instances of a specific instance family in specific Regions
+    Up to 72% savings
+
+-   SageMaker Savings :
+    Apply to SageMaker instances regardless of instance family or sizing
+    Any Region and any component
+    Up to 64% savings
+
+### Using and Applying Savings Plans -
+
+-   View recommendations within your AWS billing console.
+
+-   Recommendations are automatically calculated to make purchasing easier.
+
+-   Add to cart and purchase directly within your AWS account.
+
+-   Apply to usage rates after Reserved Instances are applied and exhausted.
+
+-   Consolidated billing family: Applied to account owner first, and then can be spread to others.
+
+# AWS Trusted Advisor
+
+AWS Trusted Advisor is a fully managed best-practice auditing tool.
+
+It inspects your AWS environments, and then makes recommendations when opportunities exist to save money, improve system availability and performance, or help close security gaps.
+
+-   Uses industry and customer-established best practices to check our AWS accounts
+-   It works at an
+    account level and requires nothing else but the service
+-   Basic or Developer support plans come with all checks in the Service Limits category, and only six checks in the Security category
+-   With Business, Enterprise On-Ramp, or Enterprise support, we get FULL access to AWS Trusted Advisory checks
+-   Business, Enterprise On-Ramp, and Enterprise get full integration with Amazon EventBridge
+
+---
+
+Cost Optimization: Recommendations where AWS believes we can actually save money within our accounts.
+
+Performance: Checks where and how we can improve speed, efficiency, and responsiveness of our applications resources.
+
+Security: How can we alter our security settings to secure our AWS accounts better? Helps maintain stricter security postures.
+
+Fault Tolerance: What can be done to help increase resiliency and availability of our resources?
+
+Service Limits: Checks the usage of our accounts and whether or not we are approaching service limits for the used resources/services.
+
+# AWS Control Tower
+
+-   Governance :
+    Easy way to set up and govern an AWS multi-account environment
+
+-   Orchestration :
+    Automates account creation and security controls via other
+    AWS services
+-   Extension :
+    Extends AWS Organizations to prevent governance drift, and leverages different guardrails
+-   New AWS Accounts :
+    Users can provision new AWS accounts quickly, using central admin established compliance policies
+-   Simple Terms :
+    Quickest way to create and manage a secure, compliant, multi-account environment based on best practices
+    based on best practices.
+
+### Features and Terms to Know -
+
+-   Landing zone: Well-architected, multi-account environment based on compliance and security best practices
+-   Guardrails: High-level rules providing continuous governance for the AWS environment
+
+-   Account Factory: Configurable account template for standardizing pre-approved configs of new accounts
+
+-   CloudFormation StackSet: Automated deployments of templates deploying repeated resources for governance
+
+-   Shared accounts: Three accounts used by Control Tower created during landing zone creation
+
+# Guardrails
+
+High-level rules in plain language providing ongoing governance
+
+![alt text](/Photos/image78.png)
+
+![alt text](/Photos/image79.png)
+
+# AWS License Manager
+
+-   Licenses Made Easy :
+    Simplifies managing software licenses with different vendors (Microsoft, SAP, and
+    Oracle)
+-   Centralized :
+    Helps centrally manage licenses across AWS accounts and on-premises environments
+-   Set Usage Limits :
+    Control and visibility into usage of licenses and enabling license usage limits
+-   Reduce Overages :
+    Reduces overages and penalties via inventory tracking and rule-based controls for consumption
+-   Versatile :
+    Supports any software based on vCPU, physical cores, sockets, and number of machines
+
+# AWS Health
+
+AWS is shifting to calling the service AWS Personal Health Dashboard AWS Health in the documentation.
+
+-   Gain visibility of resource performance and availability of AWS services or accounts.
+-   View how the health events affect you and your services, resources, and accounts.
+-   AWS attempts to maintain timeliness and relevant information with the events.
+-   View upcoming maintenance tasks that may affect your accounts and resources.
+-   It has near-instant delivery of notifications and alerts to speed up troubleshooting or prevention.
+
+**Automate actions based on incoming events using Amazon EventBridge.**
+
+## AWS Health Concepts
+
+-   AWS Health event: Notifications sent on behalf of AWS services or AWS
+-   Account-specific event: Events specific to your AWS account or AWS organization
+-   Public event: Events reported on services that are public, not specific to accounts
+-   AWS Health Dashboard: Dashboard showing account and public events, shows service health as well
+-   Event type code: Include the affected services and the specific type of event
+-   Event type category: Associated category — will be attached to every event
+-   Event status: Reports if the event is open, closed, or upcoming
+-   Affected entities: Which AWS resources are or may be affected by the event
+
+# Service Catalog
+
+-   Catalogs :
+    Allows organizations to create and manage catalogs of approved IT services.
+-   Multipurpose :
+    List things like AMis, servers, software, databases, and other preconfigured components.
+-   Centralized :
+    AWS Organizations can centrally manage IT services and maintain compliance.
+-   End-User Friendly :
+    End users can be allowed to easily deploy preapproved catalog items within an organization.
+-   CloudFormation :
+    Catalog templates are written and listed using
+    CloudFormation templates.
+
+### Benefits of AWS Service Catalog -
+
+-   Restrict launching products to a specific list of preapproved solutions.
+-   End users can browse products and deploy approved services on their own.
+-   Add constraints and grant access to products using AWS IAM.
+-   Update products to newer versions and propagate changes automatically.
+
+# AWS Proton
+
+AWS Proton is a service that creates and manages infrastructure and deployment tooling for users as well as serverless and container-based applications.
+
+-   Automate Infrastructure as Code (laC) provisioning and deployments.
+
+-   Define standardized infrastructure for your serverless and container-based apps.
+
+-   Use templates to define and manage app stacks that contain ALL components.
+
+-   AWS Proton automatically provisions resources, configures CI/CD, and deploys the code.
+-   Supports AWS CloudFormation and Terraform laC providers.
+
+# AWS Well-Architected Tool
+
+-   Provides a consistent process for measuring cloud architectures
+
+-   Enables assistance with documenting workloads and architectures
+
+-   Guides for making workloads reliable, secure, efficient, and cost effective
+
+-   Measure workloads against years of AWS best practices
+
+-   Intended for specific audiences, such as technical teams, CTOs, architecture, and operations teams
+
+---
+
+# Migration
+
+### Moving Data to AWS -
+
+-   Internet :
+    Using your existing connection is convenient but potentially very slow and could be a security risk.
+-   Direct Connect :
+    This can be faster and more secure, but it's not always practical if it's not needed after the migration.
+-   Physical :
+    What if you bundled your data and physically delivered it to AWS? You could bypass the internet entirely.
+
+# Snow Family
+
+The Snow Family is a set of secure appliances that provide petabyte-scale data collection and processing solutions at the edge and migrate large-scale data into and out of AWS. They offer built-in computing capabilities, enabling customers to run their operations in remote locations that do not have data center access or reliable network connectivity.
+
+## Snowcone :
+
+**THE SMALLEST DEVICE IN THE SNOW FAMILY**
+
+-   8 TB of storage, 4 GB of memory, and 2 vCPUs
+-   Easily migrate data to AWS after you've processed it
+-   ioT sensor integration
+-   Perfect for edge computing where space and power are constrained
+
+## Snowball Edge :
+
+-   48 TB to 81 TB in storage
+-   Storage, Compute, and GPU flavors
+-   Varying amount of CPU and RAM
+-   Perfect for off-the-grid computing or a migration to AWS
+
+## Snowmobile :
+
+-   100 PB of storage
+-   Designed for exabyte-scale data center migration
+-   There's a good chance you don't need this
+
+# Storage Gateway
+
+Storage Gateway is a hybrid cloud storage service that helps you merge on-premises resources with the cloud. It can help with a one-time migration or a long-term pairing of your architecture with AWS.
+
+**CACHING LOCAL FILES**
+
+-   NFS or SMB mount
+-   Keep a local copy of recently used files
+-   Extend on-premises storage
+-   Helps with migrations to AWS
+
+![alt text](/Photos/image80.png)
+
+# Volume Gateway
+
+**BACKUP DRIVES**
+
+-   iSCSI mount
+-   Cached or stored mode
+-   Create EBS snapshots
+-   Perfect for backup or migration
+
+![alt text](/Photos/image81.png)
+
+# Tape Gateway
+
+-   Replace physical tapes
+-   Doesn't change current workflow
+-   Encrypted communication
+
+![alt text](/Photos/image82.png)
+
+# DataSync
+
+AWS DataSync is an agent-based solution for migrating on-premises storage to AWS. It allows you to easily move data between NFS and SMB shares and AWS storage solutions.
+
+![alt text](/Photos/image83.png)
+
+# AWS Transfer Family
+
+The AWS Transfer Family allows you to easily move files in and out of S3 or EFS using Secure File Transfer Protocol (SFTP), File Transfer Protocol over SSL (FTPS), or the File Transfer
+Protocol (FTP).
+
+![alt text](/Photos/image84.png)
+
+# AWS Migration Hub
+
+AWS Migration Hub gives you a single place to track the progress of your application migration to AWS. It integrates with Server Migration Service (SMS) and Database Migration Service (DMS).
+
+# Server Migration Service
+
+![alt text](/Photos/image85.png)
+
+# AWS Application Discovery Service
+
+-   Helps plan migrations to
+    AWS via collection of usage and configuration data from on-premises
+    servers
+-   Integrates with AWS
+    Migration Hub, simplifying migrations and tracking migration statuses
+-   Helps you easily view discovered servers, group them by application, and track each application migration
+
+### Discovery Types -
+
+-   Agentless :
+    Completed via the Agentless Collector
+    OVA file within the VMware Center
+    Identifies hosts and VMs in Center
+    IP and MAC address, resource allocations, and hostnames
+    Utilization data metrics
+
+-   Agent Based :
+    Deploy AWS Application Discovery Agent
+    Each VM and each physical server
+    Installer for Windows and Linux
+    Static config data, time-series performance info, network connections, and OS processes
+
+# AWS Application Migration Service (AWS MGN)
+
+-   Automated lift-and-shift service for expediting migration of apps to AWS
+-   Used for physical, virtual, or cloud servers to avoid cutover windows or disruptions
+-   Replicates source servers into AWS, and automatically converts and launches on
+    AWS to migrate quickly
+
+### AWS MGN RTO and RPO -
+
+-   RTO :
+    Recovery Time Objective: Typically just minutes; dependent on OS boot time
+-   RPO :
+    Recovery Point Objective: Measured in the sub-second range
+
+# DMS (Database Management Service)
+
+-   It allows for easy migration of relational databases, data warehouses, NoSQL databases, and other data stores.
+-   Migrate data between AWS and on-premises - either into or out of AWS.
+-   You have the option to perform a one-time migration or continuously replicate ongoing changes.
+-   The SCT allows for translating database schemas to new platforms.
+-   Since it is a cloud service, you gain the advantages of AWS: cost, efficiency, security, and more.
+
+**Working** :
+
+-   DMS is a server running replication software.
+-   Create source and target connections for loading from and to.
+-   Schedule tasks to run on the DMS server to move data.
+-   AWS creates the tables and primary keys (if they do not exist on the target).
+-   Optionally, create your target tables beforehand if desired.
+-   Leverage the SCT for creating some or all of your tables, indexes, and more.
+-   Source and target data stores are referred to as endpoints.
+
+### Concepts -
+
+-   Easily migrate between source and target endpoints with the same engine types.
+    Example: MySQL to MySQL
+-   Also migrate between source and target endpoints with different engines.
+    Example: Oracle to PostgreSQL
+-   You must have ONE endpoint live within an AWS service.
+    It cannot be used exclusively
+
+## AWS Schema Conversion Tool (SCT)
+
+-   Leverage the SCT to convert existing database schemas from one engine to another.
+-   Convert many types of relational databases, including both OLAP and OLTP.
+    It even supports data warehouses.
+-   Converted schemas can be used for any supported Amazon
+    RDS engine type, Amazon Aurora, or Amazon Redshift.
+-   You can even use the converted schemas with databases running on EC2 or data stored in S3.
+
+### Migration Types to Know :
+
+-   Full Load :
+    All existing data is moved from sources to targets in parallel.
+-   Full Load and Change
+    Data Capture (CDC) :
+    Full load plus CDC captures changes to source tables during migration.
+
+    **CDC guarantees transactional integrity of the target database!**
+
+-   CDC Only :
+    Only replicate the data changes from the source database.
+
+## Migrating Large Data Stores via AWS Snowball :
+
+-   Some data migrations can include terabytes of information.
+-   Large migrations can take up bandwidth and cause network throttles.
+-   Leverage certain Snowball Edge devices and S3 with DMS to migrate large data sets quickly.
+-   You can still leverage the SCT to extract data into Snowball devices and then into S3.
+-   DMS can still load the extracted data from S3 and migrate to the chosen destination.
+-   Still able to leverage CDC for capturing changes when extracting data to store in S3.
+
+---
+
+# Front-End Web and Mobile
+
+# Amplify
+
+Amplify offers tools for front-end web and mobile developers to quickly build full-stack applications on AWS.
+
+#### Amplify offers two services for developers -
+
+-   _Amplify Hosting_ :
+    -   Support for common single-page application (SPA) frameworks, like React, Angular, and Vue
+        Also supports Gatsby and Hugo static site generators
+    -   Allows for separate production and staging environments for the front-end and backend
+    -   Support for server-side rendering apps, like Next.js
+-   _Amplify Studio_ :
+    -   Easy authentication and authorization for implementation within your applications
+    -   Visual development environment to simplify creation of full-stack web or mobile applications
+    -   Offers ready-to-use
+        components, easy creation of backends, and automated connections between the front-end and backend
+
+# Device Farm
+
+Device Farm is an application testing service for testing and interacting with Android, iOS, and web apps.
+It's usable on actual phones and tablets hosted by AWS.
+
+### AWS Device Farm allows for two primary testing methods :
+
+-   Automated: Upload scripts or use built-in tests for automated parallel tests on mobile devices.
+-   Remote access: Swipe, gesture, and interact with devices in real time via web browsers.
+
+# Pinpoint
+
+Pinpoint enables you to engage with customers through a variety of different messaging channels.
+
+_Who Uses It?_
+
+Pinpoint is primarily intended for marketers, business users, and even developers.
+
+### Features -
+
+-   Projects: Collection of information, segments, campaigns, and journeys
+-   Channels: The platform where you intend to engage your audience segments
+-   Segments: Dynamic or imported; designates which users receive specific messages
+-   Campaigns: Initiatives engaging specific audience segments using tailored messages
+-   Journeys: Customized, multi-step engagements
+-   Message templates: Content and settings for easily reusing repeated messages
+-   Machine learning: Leverage machine learning models to predict user patterns
+
+_Where to Use It_ -
+
+-   Promoting products and services via emails, SMS, or push notifications
+-   Messages to customers after transactions (e.g., order confirmations or shipping notifications)
+-   Messages targeted to millions of people
+
+---
+
+# Machine Learning
+
+# Amazon Comprehend
+
+Comprehend uses natural-language processing (NLP) to help you understand the meaning and sentiment in your text. For example, you can automate understanding whether people are saying positive or negative things about your service.
+You can also pick up on key phrases.
+Comprehend is a way of automating comprehension at scale.
+
+_Use Cases for Comprehend_ :
+
+-   Automatically detect if your customers are having a positive or negative experience with call center staff. It can be used in conjunction with Amazon Transcribe.
+-   Create indexes and automate your product
+    reviews to detect whether people are happy
+    with your products or services or not.
+-   Automatically search all your contracts and for examples of recent court case decisions.
+-   Insurance companies can automate insurance
+    claims and process where common claims are
+    coming from.
+
+# Kendra
+
+Kendra allows you to create an intelligent search service powered by machine learning.
+
+Enterprise search applications can bridge between different silos of information (such as S3 buckets, file servers, and websites), allowing your enterprise to have all the data intelligently in one place.
+
+## Use Cases for Kendra
+
+-   Previous research papers by scientists may be scattered all over the place, such as in S3 buckets, databases, and text files. With Kendra, you can consolidate this into one place.
+-   Use Kendra to better understand what your customers are asking, and then return more relevant answers and experiences.
+-   You can use machine learning to automate the research of new regulation that may impact your business, such as new ISO requirements, HIPAA, or PCI-compliant policies.
+-   By having your data searchable in one place, you can increase your productivity by ensuring your staff are not spending hours trying to find the right data.
+
+# Amazon Textract
+
+Textract uses machine learning to automatically extract text,
+handwriting, and data from scanned documents.
+
+_Use Cases for
+Textract_ :
+
+-   Your customers may fill in a mortgage application by hand. Using Textract, you can convert their handwritten applications into completed forms that are readable by a computer.
+-   Most health insurance claims can involve an element of handwriting (e.g., doctors' notes).
+    Automate this into data you can then quickly process.
+-   Tax returns completed by accountants or general members of the public using handwriting can be quickly converted into machine-readable documents.
+
+## Beyond OCR
+
+Using machine learning and OCR (optical character recognition), Textract can process text, handwriting, tables, and more with no manual intervention.
+You can quickly turn text (such as receipts or handwritten letters) into data, which you can then store in the AWS Cloud in databases or S3.
+
+# Time-Series Data
+
+Data points that are logged over a series of time, allowing you to track your data. Examples could be temperature readings from weather stations around the world, on the hour, every hour for years.
+
+**Examples** :
+
+-   ioT sensors relay thousands, millions, and billions of points of information depending on the setup. One use case is for agriculture.
+-   Large websites such as Netflix serve millions of users per second. Need to analyze incoming and outgoing web traffic.
+-   Applications that change in response to users needs may need to be monitored continuously so they can scale correctly.
+
+# Amazon Forecast
+
+Amazon Forecast is a time-series forecasting service that uses machine learning and is built to give you important business insights.
+
+You can send your data to Amazon Forecast and it will automatically learn your data, select the right machine learning algorithm, and then help you forecast your data.
+
+_Usecase :_
+
+-   ioT
+
+-   Analytics
+
+-   DevOps applications
+
+# Fraud Detector
+
+Exactly what it sounds like: an AWS Al service that is built to detect fraud in your data.
+
+Create a fraud detection machine learning model that is based on your data. You can also quickly automate this process.
+
+### Use Cases :
+
+-   Train the model to identify suspicious online payments based on previous cases of fraud.
+-   Stop users from automating "free trial" accounts so they get indefinite free service.
+-   Automate the detection of account takeovers where an illegitimate user hijacks a legitimate users account.
+-   Create a model where you can distinguish
+    between genuine new users or accounts and
+    high-risk accounts, and then add additional
+    security checks to the accounts that are high risk.
+
+# Transcribe
+
+Transcribe is used to covert speech to text automatically. You can use this service to generate subtitles on the fly.
+
+**Use Case** :
+Turn your audio and video files into text in a fast and automated process. One specific use case is to generate subtitles.
+
+# Lex
+
+Lex allows you to build conversational interfaces in your applications using natural language models. Chances are that when you are talking to an automated bot online, you are interacting with the Lex service on the backend.
+
+_Use Cases :_
+
+-   Create virtual agents to arrange refunds, flight changes, password reset requests, and more.
+-   Create chatbots that can interact with your customers and improve the productivity of your customer support teams.
+-   Automate the frequently asked questions on your website so users can ask them directly.
+-   Automate your existing contact center scripts as chatbots.
+
+# Polly
+
+Polly turns your text into lifelike speech and allows you to create applications that talk to and interact with you using a variety of languages and accents.
+
+_Use Case_ :
+Polly allows you to create applications that speak rather than just display text, making your content more accessible. If you visit the AWS blog, you can see an example of Polly converting blog posts into lifelike speech.
+
+# Amazon Rekognition
+
+Amazon SageMaker is a fully managed machine learning (ML) service. With SageMaker, data scientists and developers can quickly and confidently build, train, and deploy ML models into a production-ready hosted environment. It provides a Ul experience for running ML workflows that makes SageMaker ML tools available across multiple integrated development environments (IDEs).
+
+With SageMaker, you can store and share your data without having to build and manage your own servers. This gives you or your organizations more time to collaboratively build and develop your ML workflow, and do it sooner. SageMaker provides managed ML algorithms to run efficiently against extremely large data in a distributed environment. With built-in support for bring-your-own-algorithms and frameworks, SageMaker offers flexible distributed training options that adjust to your specific workflows. Within a few steps, you can deploy a model into a secure and scalable environment from the SageMaker console.
+
+_Use Cases :_
+
+-   Automatically moderate content allowing your applications and websites to be family friendly. This is a common exam scenario.
+-   Automatically recognize famous people and label them.
+-   Automatically recognize faces and detect whether someone is wearing a hat or glasses.
+-   It is useful for applications such as Ring.
+    Automatically recognize people, animals, and faces as well as create alert notifications.
+
+**Two Deployment Types** :
+
+![alt text](/Photos/image86.png)
+
+**SageMaker Stages** :
+
+1. Create a Model :
+   This is the place that will provide predictions for your endpoint.
+2. Create an Endpoint Configuration :
+   This is where you specify the model to use, inference instance type, instance count, variant name, and weight.
+   This can sometimes be called a production variant.
+3. Create an Endpoint :
+   This is where the model is published, and you can invoke the model using the InvokeEndpoint()
+   method.
+
+### Model Training -
+
+![alt text](/Photos/image87.png)
+
+# SageMaker Neo
+
+Customize your machine learning models for specific CPU hardware, such as ARM, Intel, and NVIDIA processors.
+
+It includes a compiler to convert the machine learning model to an environment that is optimized to execute the model on the target architecture.
+
+![alt text](/Photos/image88.png)
+
+# Elastic Inference (EI)
+
+EI speeds up throughput and decreases latency of realtime inferences deployed on SageMaker hosted services using only CPU-based instances. It is much more cost-effective than a full GPU instance.
+It must be configured when you create a deployable model. El is not available for all algorithms yet.
+
+## Autoscaling SageMaker Models -
+
+Dynamically add and remove instances to a production variant based on changes in workload.
+
+You define and apply a scaling policy that uses a CloudWatch metric and target value, such as InvocationsPer Instance.
+
+# Amazon Translate
+
+A machine learning service that allows you to automate language translation.
+
+Using deep learning and neural networks, Amazon Translate allows you to translate from one language to another.
+
+**Use Cases** :
+
+-   The translation service is very accurate, and Amazon is continuously innovating to improve the accuracy of it.
+-   Translate is extremely cost effective — especially when compared to the cost of hiring human translators.
+-   You can very easily integrate the translation service with your applications using APls.
+-   Translate has the scalability of AWS, so no matter what the workload - whether a few pages of text or a library of novels - Translate will scale with your demands.
+
+---
+
+# Media
+
+# Elastic Transcoder
+
+Elastic Transcoder allows businesses and developers to convert (or
+"transcode") media files from their original source format into versions that are optimized for various devices, such as smartphones, tablets, and PCS.
+
+We use Elastic Transcoder to encode our videos you are watching now so they are optimized for the device you are viewing it on.
+
+_Benefits :_
+
+-   You can set up Elastic Transcoder using APIs, the SDKs, or the AWS Management Console. It's easy to get started, and you can start transcoding immediately.
+-   It scales on demand. You can use Elastic Transcoder to transcode everything from small frequent files, to extremely large video files in the thousands, all at once. It scales depending on your
+
+# Kinesis Video Streams
+
+If you need to stream media content from a large number of devices to AWS and then run analytics, machine learning (ML), playback, and other processing, consider using Kinesis Video Streams. A perfect example of this is Ring.
+
+Kinesis Video Streams elastically scales to millions of devices and then stores, encrypts, and indexes video data in your streams. You can then access your data through easy-to-use APls.
+
+### Use Cases :
+
+Smart Home :
+Think Amazon Ring. You can stream video content from your Ring devices to Kinesis Video Streams and then run analysis on the data.
+
+Smart City :
+Many cities have devices like CCTV cameras at traffic lights and junctions that can be monitored automatically using Kinesis Streams.
+
+Industrial Automation :
+You can use Kinesis Streams to ingest time-encoded data (e.g., LIDAR and RADAR signals and temperature sensors) and then provide industrial automation.
