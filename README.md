@@ -5,6 +5,7 @@
 -   [`SIMPLE STORAGE SERVICE (S3)`](#simple-storage-service-s3)
 -   [`ELASTIC COMPUTE CLOUD (EC2)`](#elastic-compute-cloudec2)
 -   [`ELASTIC BLOCK STORAGE (EBS) & ELASTIC FILE SYSTEM (EFS)`](#elastic-block-storageebs--elastic-file-systemefs)
+- [`DATABASES`](#databases)
 -   [`VIRTUAL PRIVATE CLOUD (VPC) NETWORKING`](#virtual-private-cloud-vpc-networking)
 -   [`ROUTE 53`](#route53)
 -   [`ELASTIC LOAD BALANCING (ELB)`](#elastic-load-balancers-elb)
