@@ -5,7 +5,7 @@
 -   [`SIMPLE STORAGE SERVICE (S3)`](#simple-storage-service-s3)
 -   [`ELASTIC COMPUTE CLOUD (EC2)`](#elastic-compute-cloudec2)
 -   [`ELASTIC BLOCK STORAGE (EBS) & ELASTIC FILE SYSTEM (EFS)`](#elastic-block-storageebs--elastic-file-systemefs)
-- [`DATABASES`](#databases)
+-   [`DATABASES`](#databases)
 -   [`VIRTUAL PRIVATE CLOUD (VPC) NETWORKING`](#virtual-private-cloud-vpc-networking)
 -   [`ROUTE 53`](#route53)
 -   [`ELASTIC LOAD BALANCING (ELB)`](#elastic-load-balancers-elb)
@@ -129,6 +129,13 @@ Default Deny (or Implicit Deny): IAM identities start off with no resource acces
 ### Identity providers and federation :
 
 If you already manage user identities outside of AWS, you can use identity providers instead of creating IAM users in your AWS account. With an identity provider (IdP), you can manage your user identities outside of AWS and give these external user identities permissions to use AWS resources in your account. This is useful if your organization already has its own identity system, such as a corporate user directory. It is also useful if you are creating a mobile app or web application that requires access to AWS resources.
+
+# AWS STS
+
+AWS Security Token Service (AWS STS) is the service that you can use to create and provide trusted users with temporary security credentials that can control access to your AWS resources.
+
+-   Temporary security credentials work almost identically to the long-term access key credentials that your IAM users can use.
+-   Temporary security credentials are short-term, as the name implies. They can be configured to last for anywhere from a few minutes to several hours. After the credentials expire, AWS no longer recognizes them or allows any kind of access from API requests made with them.
 
 # Simple Storage Service (S3)
 
